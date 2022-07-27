@@ -6,15 +6,12 @@ import {
   ScrollView,
   TouchableOpacity,
   Modal,
-  Keyboard,
   TouchableWithoutFeedback,
   Alert,
 } from "react-native";
-import uuid from "react-native-uuid";
 import RDButton from "../../../src/components/RDButton.js";
 import RDTextInput from "../../../src/components/RDTextInput.js";
 import RDText from "../../../src/components/RDText.js";
-import RDChip from "../../../src/components/RDChip.js";
 import RDContainer from "../../../src/components/RDContainer.js";
 import RDForm from "../../../src/components/RDForm.js";
 import RDServiceForm from "../../../src/components/RDServiceForm.js";
@@ -22,15 +19,14 @@ import RDModal from "../../../src/components/RDModal.js";
 import { colors } from "../../theme/colors.js";
 
 // firebase
-import { db, storage } from "../../api/firebase";
-import { doc, setDoc, updateDoc, deleteDoc } from "firebase/firestore";
-import { ref as storageUpload } from "firebase/storage";
-import { uploadBytes, getMetadata, getDownloadURL } from "firebase/storage";
+import { db } from "../../api/firebase";
+import { doc, setDoc, updateDoc, deleteDoc, getDoc } from "firebase/firestore";
 
 export default function ServiceForm({ route, navigation }) {
-  const { service } = route.params;
+  const { service, from } = route.params;
 
   const [loading, setLoading] = useState(false);
+  const [justView, setJustView] = useState(false);
   const [step, setStep] = useState(1);
   const [attachModal, setAttachModal] = useState(false);
   const [notes, setNotes] = useState("");
@@ -150,6 +146,9 @@ export default function ServiceForm({ route, navigation }) {
   const [currentValue, setCurrentValue] = useState("");
 
   useEffect(() => {
+    if (from === "history") {
+      setJustView(true);
+    }
     if (
       service.status === "In attesa di conferma preventivo" ||
       service.status === "In attesa di preventivo"
@@ -157,6 +156,8 @@ export default function ServiceForm({ route, navigation }) {
       setStep(1);
     } else if (service.status === "Preventivo confermato") {
       setStep(2);
+    } else if (service.status === "In attesa di ritiro") {
+      setStep(3);
     }
     if (service.estimate) {
       setEstimate([service.estimate]);
@@ -271,55 +272,30 @@ export default function ServiceForm({ route, navigation }) {
   const moveOn = async () => {
     setLoading(true);
 
-    Alert.alert("Invia preventivo al cliente?", "", [
-      {
-        text: "Cancella",
-        onPress: () => setLoading(false),
-        style: "cancel",
-      },
-      {
-        text: "OK",
-        onPress: async () => {
-          // if (attachments.length > 0) {
-          //   const media = await uploadMedia();
-          //   await uploadToDatabase(media);
-          // } else {
-          //   await uploadToDatabase();
-          // }
-          await uploadToDatabase();
+    Alert.alert(
+      step === 1
+        ? "Invia preventivo al cliente?"
+        : step === 2
+        ? "Ordine pronto?"
+        : "Cliente ha ritirato?",
+      "",
+      [
+        {
+          text: "Cancella",
+          onPress: () => setLoading(false),
+          style: "cancel",
         },
-      },
-    ]);
+        {
+          text: "OK",
+          onPress: () => {
+            step === 3 ? finishService() : uploadToDatabase();
+          },
+        },
+      ]
+    );
   };
 
-  // const uploadMedia = async () => {
-  //   let mediaArr = [];
-
-  //   const metadata = {
-  //     contentType: null,
-  //   };
-
-  //   for (let i = 0; i < attachments.length; i++) {
-  //     const response = await fetch(attachments[i].uri);
-  //     const blob = await response.blob();
-  //     var ref = storageUpload(
-  //       storage,
-  //       `media/${service.serviceId}/${Math.random()}`
-  //     );
-  //     await uploadBytes(ref, blob, metadata);
-  //     await getDownloadURL(ref)
-  //       .then((metadata) => {
-  //         mediaArr.push(metadata);
-  //       })
-  //       .catch((error) => {
-  //         console.log(error);
-  //       });
-  //   }
-
-  //   return mediaArr;
-  // };
-
-  const uploadToDatabase = async (media) => {
+  const uploadToDatabase = async () => {
     const startService = doc(
       db,
       "services",
@@ -328,7 +304,6 @@ export default function ServiceForm({ route, navigation }) {
       service.serviceId
     );
     await updateDoc(startService, {
-      //attachments: attachments.length !== 0 && media,
       stage: step === 1 ? "Nuovo" : "Pronto",
       status:
         step === 1 ? "In attesa di conferma preventivo" : "In attesa di ritiro",
@@ -342,6 +317,58 @@ export default function ServiceForm({ route, navigation }) {
       });
   };
 
+  const finishService = async () => {
+    let pastOrders = [];
+
+    const currentService = doc(
+      db,
+      "services",
+      "allServices",
+      "current",
+      service.serviceId
+    );
+
+    await updateDoc(currentService, {
+      stage: "Finito",
+      status: "Ritirato",
+      serviceNotes: notes,
+      estimate: estimate[0],
+    });
+
+    const pastService = await getDoc(currentService);
+
+    const historyService = doc(
+      db,
+      "services",
+      "allServices",
+      "history",
+      service.serviceId
+    );
+
+    await setDoc(historyService, pastService.data())
+      .then(() => navigation.goBack())
+      .catch((err) => {
+        setLoading(false);
+        console.log(err);
+      });
+
+    const addToPastOrders = doc(db, "clients", service.clientInfo.id);
+
+    const client = await getDoc(addToPastOrders);
+
+    if (client.data().pastOrders !== undefined) {
+      pastOrders = client.data().pastOrders;
+    }
+
+    pastOrders.push(pastService.data());
+
+    await updateDoc(addToPastOrders, {
+      pastOrders: pastOrders,
+    });
+
+    await deleteDoc(currentService);
+  };
+
   return (
     <View style={{ flex: 1, backgroundColor: colors.mainWhite }}>
       <RDModal
@@ -350,6 +377,7 @@ export default function ServiceForm({ route, navigation }) {
         }
         category="attachments"
         visible={attachModal}
+        justView={justView}
         serviceId={service.serviceId}
         attachments={service.attachments}
         onRequestClose={() => setAttachModal(false)}
@@ -403,42 +431,52 @@ export default function ServiceForm({ route, navigation }) {
       </Modal>
       <ScrollView contentContainerStyle={{ paddingBottom: 150 }}>
         <RDContainer style={{ justifyContent: null }}>
-          <View
-            style={{
-              width: "100%",
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              padding: 10,
-            }}
-          >
-            <RDText variant="h2">{service.status}</RDText>
-            <RDText variant="h2">{service.date}</RDText>
-          </View>
-          <RDButton
-            type="list"
-            label={
-              service.clientInfo.firstName + " " + service.clientInfo.lastName
-            }
-            onPress={() =>
-              navigation.navigate("ClientForm", {
-                client: service.clientInfo,
-              })
-            }
-          />
+          {!justView && (
+            <View
+              style={{
+                width: "100%",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                padding: 10,
+              }}
+            >
+              <RDText variant="h2">{service.status}</RDText>
+              <RDText variant="h2">{service.date}</RDText>
+            </View>
+          )}
+          {!justView && (
+            <RDButton
+              type="list"
+              label={
+                service.clientInfo.firstName + " " + service.clientInfo.lastName
+              }
+              onPress={() =>
+                navigation.navigate("ClientForm", {
+                  client: service.clientInfo,
+                })
+              }
+            />
+          )}
           <View style={{ width: "95%", marginTop: 10, marginBottom: 20 }}>
             <RDText variant="h2">Dichiarazioni all'entrata</RDText>
             <RDText style={{ marginBottom: 20 }} variant="h4">
               {service.notes ? service.notes : "Nessuna"}
             </RDText>
             <RDText variant="h2">Note</RDText>
-            <RDTextInput
-              value={notes}
-              onChangeText={(e) => setNotes(e)}
-              style={{ width: "100%", marginTop: 5, marginBottom: 20 }}
-              multiline
-              placeholder="Note per questo servizio"
-            />
+            {!justView ? (
+              <RDTextInput
+                value={notes}
+                onChangeText={(e) => setNotes(e)}
+                style={{ width: "100%", marginTop: 5, marginBottom: 20 }}
+                multiline
+                placeholder="Note per questo servizio"
+              />
+            ) : (
+              <RDText style={{ marginBottom: 20 }} variant="h4">
+                {service.serviceNotes ? service.serviceNotes : "Nessuna"}
+              </RDText>
+            )}
             <View style={styles.badge}>
               <Text style={styles.cardTxt}>{service.category}</Text>
             </View>
@@ -476,38 +514,47 @@ export default function ServiceForm({ route, navigation }) {
           <Form section={0} />
         </RDContainer>
       </ScrollView>
-      <View style={styles.btnContainer}>
-        {step === 1 ? (
-          <RDButton
-            loading={loading}
-            onPress={moveOn}
-            variant="contained"
-            label={
-              service.status === "In attesa di conferma preventivo"
-                ? "Invia nuovo preventivo"
-                : "Invia preventivo"
-            }
-          />
-        ) : (
-          <View style={styles.modalBtnContainer}>
-            <RDButton
-              // loading={loading}
-              // onPress={moveOn}
-              variant="contained"
-              label="Cancella Servizio"
-              style={{ width: "47%" }}
-            />
+      {!justView && (
+        <View style={styles.btnContainer}>
+          {step === 1 ? (
             <RDButton
               loading={loading}
               onPress={moveOn}
-              black
               variant="contained"
-              label="Pronto"
-              style={{ width: "47%" }}
+              label={
+                service.status === "In attesa di conferma preventivo"
+                  ? "Invia nuovo preventivo"
+                  : "Invia preventivo"
+              }
             />
-          </View>
-        )}
-      </View>
+          ) : step === 2 ? (
+            <View style={styles.modalBtnContainer}>
+              <RDButton
+                // loading={loading}
+                // onPress={moveOn}
+                variant="contained"
+                label="Cancella Servizio"
+                style={{ width: "47%" }}
+              />
+              <RDButton
+                loading={loading}
+                onPress={moveOn}
+                black
+                variant="contained"
+                label="Pronto"
+                style={{ width: "47%" }}
+              />
+            </View>
+          ) : (
+            <RDButton
+              loading={loading}
+              onPress={moveOn}
+              variant="contained"
+              label="Cliente ha ritirato"
+            />
+          )}
+        </View>
+      )}
     </View>
   );
 }

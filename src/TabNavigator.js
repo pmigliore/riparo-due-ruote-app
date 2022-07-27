@@ -49,7 +49,10 @@ function TabNavigator({ navigation }) {
           component={HomeScreen}
           options={({ navigation }) => ({
             headerLeft: () => (
-              <TouchableOpacity style={{ marginLeft: 10 }}>
+              <TouchableOpacity
+                onPress={() => navigation.navigate("History")}
+                style={{ marginLeft: 10 }}
+              >
                 <Ionicons name="time-outline" size={30} />
               </TouchableOpacity>
             ),

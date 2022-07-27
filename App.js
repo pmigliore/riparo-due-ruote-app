@@ -6,7 +6,9 @@ import {
   Image,
   ActivityIndicator,
   LogBox,
+  TouchableOpacity,
 } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import RDLogo from "./src/components/RDLogo.js";
 import { colors } from "./src/theme/colors.js";
 
@@ -24,6 +26,7 @@ import ClientFormScreen from "./src/app/screens/ClientForm.js";
 import ServiceScreen from "./src/app/screens/Service.js";
 import ServiceFormScreen from "./src/app/screens/ServiceForm.js";
 import OrderScreen from "./src/app/screens/Order.js";
+import HistoryScreen from "./src/app/screens/History.js";
 import ResetPasswordScreen from "./src/app/ResetPassword.js";
 
 const Stack = createNativeStackNavigator();
@@ -133,6 +136,18 @@ export default function App() {
             name="ServiceForm"
             component={ServiceFormScreen}
             options={{ headerTitle: "Compila Servizio" }}
+          />
+          <Stack.Screen
+            name="History"
+            component={HistoryScreen}
+            options={{
+              headerTitle: "Servizi Passati",
+              headerRight: ({}) => (
+                <TouchableOpacity style={{ marginLeft: 15, marginRight: 10 }}>
+                  <Ionicons name="qr-code-outline" size={30} />
+                </TouchableOpacity>
+              ),
+            }}
           />
         </Stack.Navigator>
       </NavigationContainer>

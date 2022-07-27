@@ -291,6 +291,26 @@ export default function NewClientForm({ navigation, route }) {
           </RDText>
         )}
       </View>
+      {client.pastOrders && !creating && !editing && (
+        <View style={{ width: "100%" }}>
+          <RDText style={{ padding: 15 }} variant="h2">
+            Storia Ordini
+          </RDText>
+          {client.pastOrders.map((item) => (
+            <RDButton
+              key={item.date}
+              type="list"
+              label={item.date}
+              onPress={() =>
+                navigation.navigate("ServiceForm", {
+                  service: item,
+                  from: "history",
+                })
+              }
+            />
+          ))}
+        </View>
+      )}
       {!editing ? (
         <View style={styles.btnContainer}>
           <RDButton

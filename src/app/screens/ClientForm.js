@@ -19,7 +19,7 @@ import { colors } from "../../theme/colors.js";
 
 // firebase
 import { db } from "../../api/firebase";
-import { doc, setDoc, updateDoc, deleteDoc } from "firebase/firestore";
+import { doc, setDoc, updateDoc } from "firebase/firestore";
 
 export default function ClientForm({ navigation, route }) {
   const { client } = route.params;

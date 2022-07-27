@@ -40,6 +40,7 @@ export default function RDModal({
   clientName,
   date,
   serviceId,
+  justView,
 }) {
   const signatureRef = useRef();
   const video = useRef(null);
@@ -262,25 +263,27 @@ export default function RDModal({
                   label="Audio"
                 />
               </View>
-              <RDButton
-                form
-                variant="contained"
-                black
-                label={
-                  mediaType === "Video/Foto"
-                    ? "Aggiungi Video/Foto"
-                    : recording
-                    ? "Stop"
-                    : "Inizia Vocale"
-                }
-                onPress={
-                  mediaType === "Video/Foto"
-                    ? pickImage
-                    : recording
-                    ? stopRecording
-                    : startRecording
-                }
-              />
+              {!justView && (
+                <RDButton
+                  form
+                  variant="contained"
+                  black
+                  label={
+                    mediaType === "Video/Foto"
+                      ? "Aggiungi Video/Foto"
+                      : recording
+                      ? "Stop"
+                      : "Inizia Vocale"
+                  }
+                  onPress={
+                    mediaType === "Video/Foto"
+                      ? pickImage
+                      : recording
+                      ? stopRecording
+                      : startRecording
+                  }
+                />
+              )}
               <ScrollView
                 contentContainerStyle={{ alignItems: "center" }}
                 style={{ width: "100%" }}
@@ -338,14 +341,16 @@ export default function RDModal({
                   </TouchableOpacity>
                 ))}
               </ScrollView>
-              <View style={styles.btnContainer}>
-                <RDButton
-                  loading={loading}
-                  onPress={saveAttach}
-                  variant="contained"
-                  label="Salva Allegati"
-                />
-              </View>
+              {!justView && (
+                <View style={styles.btnContainer}>
+                  <RDButton
+                    loading={loading}
+                    onPress={saveAttach}
+                    variant="contained"
+                    label="Salva Allegati"
+                  />
+                </View>
+              )}
             </SafeAreaView>
           ) : (
             <SafeAreaView style={styles.container}>

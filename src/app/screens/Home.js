@@ -19,8 +19,8 @@ export default function Home({ navigation }) {
     fetchServices();
   }, []);
 
-  const fetchServices = async () => {
-    await onSnapshot(
+  const fetchServices = () => {
+    onSnapshot(
       collection(db, "services", "allServices", "current"),
       (snapshot) => {
         setCurrentServices(
