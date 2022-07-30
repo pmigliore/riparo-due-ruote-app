@@ -1,9 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, ScrollView, ActivityIndicator } from "react-native";
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  ActivityIndicator,
+  TouchableOpacity,
+} from "react-native";
 import RDChip from "../../../src/components/RDChip.js";
 import RDCard from "../../../src/components/RDCard.js";
 import RDContainer from "../../../src/components/RDContainer.js";
 import { colors } from "../../theme/colors.js";
+import { Ionicons } from "@expo/vector-icons";
 
 // firebase
 import { db } from "../../api/firebase";
@@ -17,6 +24,20 @@ export default function History({ navigation }) {
 
   useEffect(() => {
     getServices();
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate("QrScan", {
+              from: "history",
+            })
+          }
+          style={{ marginLeft: 15, marginRight: 10 }}
+        >
+          <Ionicons name="qr-code-outline" size={30} />
+        </TouchableOpacity>
+      ),
+    });
   }, []);
 
   const addFilter = (e) => {

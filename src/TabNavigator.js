@@ -57,16 +57,16 @@ function TabNavigator({ navigation }) {
               </TouchableOpacity>
             ),
             headerRight: ({}) => (
-              <View style={styles.headerRightContainer}>
-                <TouchableOpacity
-                  onPress={() => navigation.navigate("ClientSearch")}
-                >
-                  <Ionicons name="search-outline" size={30} />
-                </TouchableOpacity>
-                <TouchableOpacity style={{ marginLeft: 15, marginRight: 10 }}>
-                  <Ionicons name="qr-code-outline" size={30} />
-                </TouchableOpacity>
-              </View>
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate("QrScan", {
+                    from: "current",
+                  })
+                }
+                style={{ marginLeft: 15, marginRight: 10 }}
+              >
+                <Ionicons name="qr-code-outline" size={30} />
+              </TouchableOpacity>
             ),
             tabBarIcon: ({ color, size }) => (
               <Ionicons name="home" color={color} size={30} />

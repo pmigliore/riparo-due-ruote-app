@@ -28,6 +28,7 @@ import ServiceFormScreen from "./src/app/screens/ServiceForm.js";
 import OrderScreen from "./src/app/screens/Order.js";
 import HistoryScreen from "./src/app/screens/History.js";
 import ResetPasswordScreen from "./src/app/ResetPassword.js";
+import QrScanScreen from "./src/app/screens/QrScan.js";
 
 const Stack = createNativeStackNavigator();
 
@@ -142,12 +143,12 @@ export default function App() {
             component={HistoryScreen}
             options={{
               headerTitle: "Servizi Passati",
-              headerRight: ({}) => (
-                <TouchableOpacity style={{ marginLeft: 15, marginRight: 10 }}>
-                  <Ionicons name="qr-code-outline" size={30} />
-                </TouchableOpacity>
-              ),
             }}
+          />
+          <Stack.Screen
+            name="QrScan"
+            component={QrScanScreen}
+            options={{ headerTitle: "Scannerizza Codice QR" }}
           />
         </Stack.Navigator>
       </NavigationContainer>
