@@ -19,7 +19,7 @@ import { colors } from "../../theme/colors.js";
 
 // firebase
 import { db, storage } from "../../api/firebase";
-import { doc, setDoc, updateDoc, deleteDoc } from "firebase/firestore";
+import { doc, setDoc, updateDoc, getDoc } from "firebase/firestore";
 import { ref as storageUpload } from "firebase/storage";
 import { uploadBytes, getMetadata, getDownloadURL } from "firebase/storage";
 
@@ -120,10 +120,51 @@ export default function Service({ route, navigation }) {
       category: filter,
       stage: "Nuovo",
       status: "In attesa di preventivo",
-    }).catch((err) => {
-      setLoading(false);
-      console.log(err);
-    });
+    })
+      .then(() => updateStats())
+      .catch((err) => {
+        setLoading(false);
+        console.log(err);
+      });
+  };
+
+  const updateStats = async () => {
+    const d = new Date().getMonth();
+    const month = monthNames[d];
+    const year = new Date().getFullYear();
+
+    const updateStats = doc(db, "stats", `${month} ${year}`);
+
+    const docRef = await getDoc(updateStats);
+
+    let currentData = {
+      Batteria: 0,
+      Elettrico: 0,
+      Meccanica: 0,
+      Ruote: 0,
+    };
+
+    if (docRef.exists()) {
+      currentData = docRef.data();
+
+      currentData[filter] = parseInt(currentData[filter]) + 1;
+
+      updateDoc(updateStats, {
+        Batteria: currentData["Batteria"],
+        Elettrico: currentData["Elettrico"],
+        Meccanica: currentData["Meccanica"],
+        Ruote: currentData["Ruote"],
+      });
+    } else {
+      setDoc(updateStats, {
+        Batteria: currentData["Batteria"],
+        Elettrico: currentData["Elettrico"],
+        Meccanica: currentData["Meccanica"],
+        Ruote: currentData["Ruote"],
+      });
+    }
+    setLoading(false);
+    navigation.goBack();
   };
 
   return (
