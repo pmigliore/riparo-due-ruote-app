@@ -29,6 +29,10 @@ import OrderScreen from "./src/app/screens/Order.js";
 import HistoryScreen from "./src/app/screens/History.js";
 import ResetPasswordScreen from "./src/app/ResetPassword.js";
 import QrScanScreen from "./src/app/screens/QrScan.js";
+import ChangePasswordScreen from "./src/app/screens/ChangePassword";
+import ChangeEmailScreen from "./src/app/screens/ChangeEmail";
+import OrdersBoardScreen from "./src/app/screens/OrdersBoard";
+import DisplayOrderScreen from "./src/app/screens/DisplayOrder";
 
 const Stack = createNativeStackNavigator();
 
@@ -139,10 +143,34 @@ export default function App() {
             options={{ headerTitle: "Compila Servizio" }}
           />
           <Stack.Screen
+            name="ChangePassword"
+            component={ChangePasswordScreen}
+            options={{ headerTitle: "Cambia Password" }}
+          />
+          <Stack.Screen
+            name="ChangeEmail"
+            component={ChangeEmailScreen}
+            options={{ headerTitle: "Cambia Email" }}
+          />
+          <Stack.Screen
             name="History"
             component={HistoryScreen}
             options={{
               headerTitle: "Servizi Passati",
+            }}
+          />
+          <Stack.Screen
+            name="OrdersBoard"
+            component={OrdersBoardScreen}
+            options={{
+              headerTitle: "Ordini",
+            }}
+          />
+          <Stack.Screen
+            name="DisplayOrder"
+            component={DisplayOrderScreen}
+            options={{
+              headerTitle: "Ordini",
             }}
           />
           <Stack.Screen

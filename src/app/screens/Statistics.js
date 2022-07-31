@@ -10,22 +10,16 @@ import { monthNames } from "../../api/commonData.js";
 import { colors } from "../../theme/colors.js";
 import { Ionicons } from "@expo/vector-icons";
 import RDText from "../../components/RDText.js";
+import RDForm from "../../components/RDForm.js";
 
 // firebase
 import { db } from "../../api/firebase";
 import { getDoc, doc } from "firebase/firestore";
 
-const dateData = [
-  { categoria: "Elettrico", vendite: 0 },
-  { categoria: "Meccanica", vendite: 0 },
-  { categoria: "Ruote", vendite: 0 },
-  { categoria: "Batteria", vendite: 0 },
-];
-
 export default function Statistics() {
   const [month, setMonth] = useState(new Date().getMonth());
   const [year, setYear] = useState(new Date().getFullYear());
-  const [data, setData] = useState(dateData);
+  const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -62,7 +56,7 @@ export default function Statistics() {
       ]);
       setLoading(false);
     } else {
-      setData(dateData);
+      setData([]);
       setLoading(false);
     }
   };
@@ -71,9 +65,9 @@ export default function Statistics() {
     let nextMonth = "";
     let nextYear = "";
 
-    if (month === 12) {
+    if (month === 11) {
       nextYear = year + 1;
-      nextMonth = 1;
+      nextMonth = 0;
     } else {
       nextYear = year;
       nextMonth = month + 1;
@@ -90,9 +84,9 @@ export default function Statistics() {
     let previousMonth = "";
     let previousYear = "";
 
-    if (month === 1) {
+    if (month === 0) {
       previousYear = year - 1;
-      previousMonth = 12;
+      previousMonth = 11;
     } else {
       previousYear = year;
       previousMonth = month - 1;
@@ -110,6 +104,10 @@ export default function Statistics() {
       {loading ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator color={colors.mainBlue} size="small" />
+        </View>
+      ) : data.length === 0 ? (
+        <View style={styles.loadingContainer}>
+          <RDText>Nessuna statistica disponibile</RDText>
         </View>
       ) : (
         <VictoryChart
@@ -141,6 +139,25 @@ export default function Statistics() {
             size={30}
           />
         </TouchableOpacity>
+      </View>
+      <View
+        style={{
+          width: "100%",
+        }}
+      >
+        <RDForm
+          label="Elettrico"
+          value={data.length > 0 ? data[0].vendite : "0"}
+        />
+        <RDForm
+          label="Meccanica"
+          value={data.length > 0 ? data[1].vendite : "0"}
+        />
+        <RDForm label="Ruote" value={data.length > 0 ? data[2].vendite : "0"} />
+        <RDForm
+          label="Batteria"
+          value={data.length > 0 ? data[3].vendite : "0"}
+        />
       </View>
     </View>
   );

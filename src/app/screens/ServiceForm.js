@@ -345,12 +345,10 @@ export default function ServiceForm({ route, navigation }) {
       service.serviceId
     );
 
-    await setDoc(historyService, pastService.data())
-      .then(() => navigation.goBack())
-      .catch((err) => {
-        setLoading(false);
-        console.log(err);
-      });
+    await setDoc(historyService, pastService.data()).catch((err) => {
+      setLoading(false);
+      console.log(err);
+    });
 
     const addToPastOrders = doc(db, "clients", service.clientInfo.id);
 
@@ -366,7 +364,7 @@ export default function ServiceForm({ route, navigation }) {
       pastOrders: pastOrders,
     });
 
-    await deleteDoc(currentService);
+    await deleteDoc(currentService).then(() => navigation.goBack());
   };
 
   return (

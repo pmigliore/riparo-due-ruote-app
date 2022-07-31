@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, ScrollView, ActivityIndicator } from "react-native";
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  ActivityIndicator,
+  StatusBar,
+} from "react-native";
 import RDButton from "../../../src/components/RDButton.js";
 import RDText from "../../../src/components/RDText.js";
 import RDChip from "../../../src/components/RDChip.js";
@@ -50,6 +56,7 @@ export default function Home({ navigation }) {
 
   return (
     <View style={styles.container}>
+      <StatusBar style="auto" />
       <RDButton
         onPress={() => navigation.navigate("ClientSearch", { from: "service" })}
         form

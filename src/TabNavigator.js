@@ -57,16 +57,24 @@ function TabNavigator({ navigation }) {
               </TouchableOpacity>
             ),
             headerRight: ({}) => (
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate("QrScan", {
-                    from: "current",
-                  })
-                }
-                style={{ marginLeft: 15, marginRight: 10 }}
-              >
-                <Ionicons name="qr-code-outline" size={30} />
-              </TouchableOpacity>
+              <View style={{ flexDirection: "row" }}>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate("OrdersBoard")}
+                  style={{ marginLeft: 15, marginRight: 10 }}
+                >
+                  <Ionicons name="cart-outline" size={30} />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate("QrScan", {
+                      from: "current",
+                    })
+                  }
+                  style={{ marginLeft: 15, marginRight: 10 }}
+                >
+                  <Ionicons name="qr-code-outline" size={30} />
+                </TouchableOpacity>
+              </View>
             ),
             tabBarIcon: ({ color, size }) => (
               <Ionicons name="home" color={color} size={30} />

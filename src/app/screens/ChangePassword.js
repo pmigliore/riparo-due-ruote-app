@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import { Alert } from "react-native";
-import RDContainer from "../../src/components/RDContainer.js";
-import RDText from "../../src/components/RDText.js";
-import RDButton from "../../src/components/RDButton.js";
-import RDTextInput from "../../src/components/RDTextInput.js";
+import RDContainer from "../../components/RDContainer.js";
+import RDText from "../../components/RDText.js";
+import RDButton from "../../components/RDButton.js";
+import RDTextInput from "../../components/RDTextInput.js";
 
 //firebase
 import { sendPasswordResetEmail } from "firebase/auth";
-import { auth } from "../api/firebase.js";
+import { auth } from "../../api/firebase";
 
-export default function ResetPassword({ navigation }) {
+export default function ChangePassword({ navigation }) {
   let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
 
   const [email, setEmail] = useState("");
@@ -47,8 +47,8 @@ export default function ResetPassword({ navigation }) {
         form
         placeholder="Email"
       />
-      <RDText variant="h2">
-        Un email verra` mandata al seguente indirizzo
+      <RDText style={{ width: "90%", textAlign: "center" }} variant="h2">
+        Un email verra` mandata al seguente indirizzo per cambiare la password
       </RDText>
       <RDButton
         disabled={!email || !reg.test(email) ? true : false}
@@ -57,7 +57,7 @@ export default function ResetPassword({ navigation }) {
         style={{ marginTop: 80 }}
         form
         variant="contained"
-        label="Manda"
+        label="Cambia Password"
       />
     </RDContainer>
   );

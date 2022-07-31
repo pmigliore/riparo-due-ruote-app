@@ -302,10 +302,15 @@ export default function NewClientForm({ navigation, route }) {
               type="list"
               label={item.date}
               onPress={() =>
-                navigation.navigate("ServiceForm", {
-                  service: item,
-                  from: "history",
-                })
+                item.type === "Order"
+                  ? navigation.navigate("DisplayOrder", {
+                      order: item,
+                      client: item.clientInfo,
+                    })
+                  : navigation.navigate("ServiceForm", {
+                      service: item,
+                      from: "history",
+                    })
               }
             />
           ))}

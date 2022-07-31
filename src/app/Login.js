@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Alert } from "react-native";
 import RDLogo from "../../src/components/RDLogo.js";
 import RDContainer from "../../src/components/RDContainer.js";
 import RDButton from "../../src/components/RDButton.js";
@@ -16,7 +17,7 @@ export default function Login({ navigation }) {
 
   const login = () => {
     signInWithEmailAndPassword(auth, email, password).catch(() => {
-      Alert.alert("Alert", "The e-mail or password entered are incorrect");
+      Alert.alert("Incorretto", "Email o password sono incorrette");
     });
   };
 
