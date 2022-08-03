@@ -20,6 +20,7 @@ export default function Home({ navigation }) {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("");
   const [currentServices, setCurrentServices] = useState([]);
+  const [filteredArr, setFilteredArr] = useState([]);
 
   useEffect(() => {
     fetchServices();
@@ -50,7 +51,7 @@ export default function Home({ navigation }) {
           arr.push(currentServices[i]);
         }
       }
-      setCurrentServices([...arr]);
+      setFilteredArr([...arr]);
     }
   };
 
@@ -62,13 +63,6 @@ export default function Home({ navigation }) {
         form
         variant="contained"
         label="Aggiungi servizio"
-      />
-      <RDButton
-        onPress={() => navigation.navigate("ClientSearch", { from: "order" })}
-        form
-        black
-        variant="contained"
-        label="Ordina"
       />
       <View style={styles.chipContainer}>
         <RDChip
@@ -107,6 +101,25 @@ export default function Home({ navigation }) {
           >
             {currentServices.length === 0 ? (
               <RDText variant="h2">Nessun servizio al momento</RDText>
+            ) : filter ? (
+              filteredArr.map((item) => (
+                <RDCard
+                  form
+                  onPress={() =>
+                    navigation.navigate("ServiceForm", {
+                      service: item,
+                    })
+                  }
+                  key={item.serviceId}
+                  status={item.status}
+                  date={item.date}
+                  category={item.category}
+                  clientName={
+                    item.clientInfo.firstName + " " + item.clientInfo.lastName
+                  }
+                  stage={item.stage}
+                />
+              ))
             ) : (
               currentServices.map((item) => (
                 <RDCard

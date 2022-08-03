@@ -181,7 +181,7 @@ export default function NewClientForm({ navigation, route }) {
   const goNext = () => {
     setLoading(false);
     const clientInfo = {
-      id: id,
+      id: client ? id : newId,
       firstName: firstName,
       lastName: lastName,
       phoneNumber: phoneNumber,
@@ -291,7 +291,7 @@ export default function NewClientForm({ navigation, route }) {
           </RDText>
         )}
       </View>
-      {client.pastOrders && !creating && !editing && (
+      {client?.pastOrders && !creating && !editing && (
         <View style={{ width: "100%" }}>
           <RDText style={{ padding: 15 }} variant="h2">
             Storia Ordini
@@ -306,6 +306,7 @@ export default function NewClientForm({ navigation, route }) {
                   ? navigation.navigate("DisplayOrder", {
                       order: item,
                       client: item.clientInfo,
+                      from: "history",
                     })
                   : navigation.navigate("ServiceForm", {
                       service: item,

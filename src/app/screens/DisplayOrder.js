@@ -11,7 +11,7 @@ import { db } from "../../api/firebase";
 import { doc, setDoc, updateDoc, deleteDoc, getDoc } from "firebase/firestore";
 
 export default function DisplayOrder({ route, navigation }) {
-  const { client, order } = route.params;
+  const { client, order, from } = route.params;
 
   const [loading, setLoading] = useState(false);
 
@@ -94,14 +94,16 @@ export default function DisplayOrder({ route, navigation }) {
         <RDText variant="h2">Note: {order.notes}</RDText>
         <RDText variant="h2">Costo: {order.totalPrice}</RDText>
       </View>
-      <View style={styles.btnContainer}>
-        <RDButton
-          onPress={updateDatabase}
-          loading={loading}
-          variant="contained"
-          label="Arrivato"
-        />
-      </View>
+      {!from && (
+        <View style={styles.btnContainer}>
+          <RDButton
+            onPress={updateDatabase}
+            loading={loading}
+            variant="contained"
+            label="Arrivato"
+          />
+        </View>
+      )}
     </RDContainer>
   );
 }

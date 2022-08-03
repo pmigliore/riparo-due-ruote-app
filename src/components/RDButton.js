@@ -20,6 +20,7 @@ export default function RDButton({
   loading,
   type,
   activeOpacity,
+  first,
 }) {
   const stylesBtn = variant === "contained" && {
     backgroundColor: disabled
@@ -53,6 +54,7 @@ export default function RDButton({
     return (
       <View
         style={{
+          borderTopWidth: first && 1,
           borderBottomWidth: 1,
           borderColor: colors.mainGray,
           width: "100%",
@@ -64,7 +66,7 @@ export default function RDButton({
             flexDirection: "row",
             justifyContent: "space-between",
             alignItems: "center",
-            padding: 15
+            padding: 15,
           }}
           onPress={onPress}
         >

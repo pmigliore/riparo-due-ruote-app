@@ -22,31 +22,35 @@ export default function QrScan({ navigation, route }) {
 
   const handleBarCodeScanned = async ({ type, data }) => {
     setScanned(true);
-
-    if (from === "current") {
-      const querySnapshot = await getDocs(
-        collection(db, "services", "allServices", "current")
-      );
-      querySnapshot.forEach((doc) => {
-        if (doc.data().serviceId === data) {
-          navigation.navigate("ServiceForm", {
-            service: doc.data(),
-          });
-        }
-      });
-    } else {
-      const querySnapshot = await getDocs(
-        collection(db, "services", "allServices", "history")
-      );
-      querySnapshot.forEach((doc) => {
-        if (doc.data().serviceId === data) {
-          navigation.navigate("ServiceForm", {
-            service: doc.data(),
-          });
-        }
-      });
+    console.log(data);
+    try {
+      if (from === "current") {
+        const querySnapshot = await getDocs(
+          collection(db, "services", "allServices", "current")
+        );
+        querySnapshot.forEach((doc) => {
+          if (doc.data().serviceId === data) {
+            navigation.navigate("ServiceForm", {
+              service: doc.data(),
+            });
+          }
+        });
+      } else {
+        const querySnapshot = await getDocs(
+          collection(db, "services", "allServices", "history")
+        );
+        querySnapshot.forEach((doc) => {
+          if (doc.data().serviceId === data) {
+            navigation.navigate("ServiceForm", {
+              service: doc.data(),
+              from: "history",
+            });
+          }
+        });
+      }
+    } catch (err) {
+      Alert.alert(`Servizio non esiste`);
     }
-    Alert.alert(`Servizio non esiste`);
   };
 
   if (hasPermission === null) {

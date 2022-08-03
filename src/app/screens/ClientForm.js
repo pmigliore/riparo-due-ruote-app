@@ -19,12 +19,11 @@ import { colors } from "../../theme/colors.js";
 
 // firebase
 import { db } from "../../api/firebase";
-import { doc, setDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 
 export default function ClientForm({ navigation, route }) {
   const { client } = route.params;
 
-  const newId = uuid.v4();
   const [editing, setEditing] = useState(false);
   const [creating, setCreating] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -47,24 +46,27 @@ export default function ClientForm({ navigation, route }) {
 
   const fillClient = () => {
     setCreating(false);
-    setId(client.id);
-    setFirstName(client.firstName);
-    setLastName(client.lastName);
-    setPhoneNumber(client.phoneNumber);
-    setEmail(client.email);
-    setScore(client.score);
-    setNotes(client.notes);
-    navigation.setOptions({
-      headerRight: () => (
-        <TouchableOpacity
-          onPress={() => {
-            editForm(true);
-          }}
-          style={{ marginLeft: 10 }}
-        >
-          <Ionicons name="pencil-outline" size={20} />
-        </TouchableOpacity>
-      ),
+    const getClient = doc(db, "clients", client.id);
+    getDoc(getClient).then((res) => {
+      setId(res.data().id);
+      setFirstName(res.data().firstName);
+      setLastName(res.data().lastName);
+      setPhoneNumber(res.data().phoneNumber);
+      setEmail(res.data().email);
+      setScore(res.data().score);
+      setNotes(res.data().notes);
+      navigation.setOptions({
+        headerRight: () => (
+          <TouchableOpacity
+            onPress={() => {
+              editForm(true);
+            }}
+            style={{ marginLeft: 10 }}
+          >
+            <Ionicons name="pencil-outline" size={20} />
+          </TouchableOpacity>
+        ),
+      });
     });
   };
 
@@ -87,30 +89,7 @@ export default function ClientForm({ navigation, route }) {
     }
   };
 
-  const createClient = () => {
-    setLoading(true);
-    if (creating) {
-      const addClient = doc(db, "clients", newId);
-      setDoc(addClient, {
-        id: newId,
-        firstName: firstName,
-        lastName: lastName,
-        phoneNumber: phoneNumber,
-        email: email,
-        score: score,
-        notes: notes,
-      })
-        .then(() => goNext())
-        .catch((err) => {
-          setLoading(false);
-          console.log(err);
-        });
-    } else {
-      goNext();
-    }
-  };
-
-  const save = () => {
+  const saveClient = () => {
     setLoading(true);
     const addClient = doc(db, "clients", id);
     updateDoc(addClient, {
@@ -260,7 +239,7 @@ export default function ClientForm({ navigation, route }) {
                 ? true
                 : false
             }
-            onPress={save}
+            onPress={saveClient}
             variant="contained"
             label="Salva"
           />

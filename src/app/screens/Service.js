@@ -16,6 +16,7 @@ import RDContainer from "../../../src/components/RDContainer.js";
 import RDForm from "../../../src/components/RDForm.js";
 import RDModal from "../../../src/components/RDModal.js";
 import { colors } from "../../theme/colors.js";
+import { monthNames } from "../../api/commonData.js";
 
 // firebase
 import { db, storage } from "../../api/firebase";
@@ -41,7 +42,7 @@ export default function Service({ route, navigation }) {
   var yyyy = today.getFullYear();
   const date = dd + "/" + mm + "/" + yyyy;
 
-  const serviceId = uuid.v4();
+  const [serviceId, setServiceId] = useState(uuid.v4());
   const [loading, setLoading] = useState(false);
   const [onlyView, setOnlyView] = useState(false);
   const [signModal, setSignModal] = useState(false);
@@ -74,9 +75,8 @@ export default function Service({ route, navigation }) {
   const startService = async () => {
     setLoading(true);
     const media = await uploadMedia();
-    await uploadToDatabase(media);
+    uploadToDatabase(media);
     //TODOs: send customer receipt to WhatsApp
-    setQrModal(true);
   };
 
   const uploadMedia = async () => {
@@ -163,8 +163,8 @@ export default function Service({ route, navigation }) {
         Ruote: currentData["Ruote"],
       });
     }
-    setLoading(false);
-    navigation.goBack();
+
+    setQrModal(true);
   };
 
   return (

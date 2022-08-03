@@ -234,7 +234,7 @@ export default function ServiceForm({ route, navigation }) {
         return (
           <View key={item.title}>
             <RDServiceForm
-              editing={step === 1 ? true : false}
+              editing={step === 1 && from !== "history" ? true : false}
               key={item.id}
               placeholder="Importo"
               label={item.title}
@@ -245,7 +245,7 @@ export default function ServiceForm({ route, navigation }) {
             {item.more.map((obj) => (
               <RDServiceForm
                 key={obj.id}
-                editing={step === 1 ? true : false}
+                editing={step === 1 && from !== "history" ? true : false}
                 placeholder="Importo"
                 label={obj.title}
                 value={obj.input}
@@ -257,7 +257,7 @@ export default function ServiceForm({ route, navigation }) {
       } else {
         return (
           <RDServiceForm
-            editing={step === 1 ? true : false}
+            editing={step === 1 && from !== "history" ? true : false}
             key={item.id}
             checkbox
             placeholder="Importo"
@@ -288,7 +288,7 @@ export default function ServiceForm({ route, navigation }) {
         {
           text: "OK",
           onPress: () => {
-            step === 3 ? finishService() : uploadToDatabase();
+            step === 3 ? finishService("Ritirato") : uploadToDatabase();
           },
         },
       ]
@@ -317,7 +317,7 @@ export default function ServiceForm({ route, navigation }) {
       });
   };
 
-  const finishService = async () => {
+  const finishService = async (e) => {
     let pastOrders = [];
 
     const currentService = doc(
@@ -330,7 +330,7 @@ export default function ServiceForm({ route, navigation }) {
 
     await updateDoc(currentService, {
       stage: "Finito",
-      status: "Ritirato",
+      status: e,
       serviceNotes: notes,
       estimate: estimate[0],
     });
@@ -380,6 +380,7 @@ export default function ServiceForm({ route, navigation }) {
         attachments={service.attachments}
         onRequestClose={() => setAttachModal(false)}
         onClose={() => setAttachModal(false)}
+        onDone={(e) => setAttachModal(e)}
       />
       <Modal
         animationType="fade"
@@ -429,7 +430,7 @@ export default function ServiceForm({ route, navigation }) {
       </Modal>
       <ScrollView contentContainerStyle={{ paddingBottom: 150 }}>
         <RDContainer style={{ justifyContent: null }}>
-          {!justView && (
+          {justView && (
             <View
               style={{
                 width: "100%",
@@ -443,19 +444,17 @@ export default function ServiceForm({ route, navigation }) {
               <RDText variant="h2">{service.date}</RDText>
             </View>
           )}
-          {!justView && (
-            <RDButton
-              type="list"
-              label={
-                service.clientInfo.firstName + " " + service.clientInfo.lastName
-              }
-              onPress={() =>
-                navigation.navigate("ClientForm", {
-                  client: service.clientInfo,
-                })
-              }
-            />
-          )}
+          <RDButton
+            type="list"
+            label={
+              service.clientInfo.firstName + " " + service.clientInfo.lastName
+            }
+            onPress={() =>
+              navigation.navigate("ClientForm", {
+                client: service.clientInfo,
+              })
+            }
+          />
           <View style={{ width: "95%", marginTop: 10, marginBottom: 20 }}>
             <RDText variant="h2">Dichiarazioni all'entrata</RDText>
             <RDText style={{ marginBottom: 20 }} variant="h4">
@@ -528,8 +527,23 @@ export default function ServiceForm({ route, navigation }) {
           ) : step === 2 ? (
             <View style={styles.modalBtnContainer}>
               <RDButton
-                // loading={loading}
-                // onPress={moveOn}
+                loading={loading}
+                onPress={() =>
+                  Alert.alert(
+                    "Sei sicuro?",
+                    "Queso servizio verra cancellato permanentemente",
+                    [
+                      {
+                        text: "Cancel",
+                        style: "cancel",
+                      },
+                      {
+                        text: "OK",
+                        onPress: () => finishService("Cancellato"),
+                      },
+                    ]
+                  )
+                }
                 variant="contained"
                 label="Cancella Servizio"
                 style={{ width: "47%" }}

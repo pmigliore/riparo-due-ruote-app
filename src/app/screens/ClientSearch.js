@@ -19,8 +19,11 @@ import { collection, getDocs } from "firebase/firestore";
 
 export default function ClientSearch({ route, navigation }) {
   const { from } = route.params;
+
   const [loaded, setLoaded] = useState(false);
   const [clients, setClients] = useState([]);
+  const [search, setSearch] = useState("");
+  const [filteredDataSource, setFilteredDataSource] = useState([]);
 
   useEffect(() => {
     getClients();
@@ -36,10 +39,31 @@ export default function ClientSearch({ route, navigation }) {
     setLoaded(true);
   };
 
+  const searchFilterFunction = (text) => {
+    if (text) {
+      const newData = clients.filter(function (item) {
+        const itemData = item.firstName
+          ? item.firstName.toUpperCase()
+          : "".toUpperCase();
+        const textData = text.toUpperCase();
+        return itemData.indexOf(textData) > -1;
+      });
+      setFilteredDataSource(newData);
+      setSearch(text);
+    } else {
+      setFilteredDataSource(clients);
+      setSearch(text);
+    }
+  };
+
   return (
     <RDContainer style={{ justifyContent: null }}>
       <View style={styles.searchContainer}>
-        <RDSearchInput placeholder="Cerca cliente..." />
+        <RDSearchInput
+          onChangeText={(text) => searchFilterFunction(text)}
+          placeholder="Cerca cliente..."
+          value={search}
+        />
       </View>
       <View style={styles.resultsContainer}>
         <RDText variant="h2">Storia Clienti</RDText>
@@ -47,22 +71,37 @@ export default function ClientSearch({ route, navigation }) {
           <ActivityIndicator color={colors.mainBlue} size="small" />
         ) : (
           <ScrollView>
-            {clients.map((item) => (
-              <RDCard
-                form
-                type="client"
-                key={item.id}
-                clientName={item.firstName + " " + item.lastName}
-                services={item.services}
-                onPress={
-                  () =>
-                    navigation.navigate("NewClientForm", {
-                      from: from,
-                      client: item,
-                    })
-                }
-              />
-            ))}
+            {search.length > 1
+              ? filteredDataSource.map((item) => (
+                  <RDCard
+                    form
+                    type="client"
+                    key={item.id}
+                    clientName={item.firstName + " " + item.lastName}
+                    services={item.services}
+                    onPress={() =>
+                      navigation.navigate("NewClientForm", {
+                        from: from,
+                        client: item,
+                      })
+                    }
+                  />
+                ))
+              : clients.map((item) => (
+                  <RDCard
+                    form
+                    type="client"
+                    key={item.id}
+                    clientName={item.firstName + " " + item.lastName}
+                    services={item.services}
+                    onPress={() =>
+                      navigation.navigate("NewClientForm", {
+                        from: from,
+                        client: item,
+                      })
+                    }
+                  />
+                ))}
           </ScrollView>
         )}
       </View>

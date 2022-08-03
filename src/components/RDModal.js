@@ -19,13 +19,12 @@ import * as ImagePicker from "expo-image-picker";
 import { Video, AVPlaybackStatus, Audio } from "expo-av";
 import QRCode from "react-native-qrcode-svg";
 import * as Print from "expo-print";
-import { shareAsync } from "expo-sharing";
 
 // firebase
 import { db, storage } from "../api/firebase";
-import { doc, setDoc, updateDoc, deleteDoc } from "firebase/firestore";
+import { doc, updateDoc } from "firebase/firestore";
 import { ref as storageUpload } from "firebase/storage";
-import { uploadBytes, getMetadata, getDownloadURL } from "firebase/storage";
+import { uploadBytes, getDownloadURL } from "firebase/storage";
 
 export default function RDModal({
   category,
@@ -41,6 +40,7 @@ export default function RDModal({
   date,
   serviceId,
   justView,
+  onDone,
 }) {
   const signatureRef = useRef();
   const video = useRef(null);
@@ -49,7 +49,6 @@ export default function RDModal({
   const [loading, setLoading] = useState(false);
   const [files, setFiles] = useState([]);
   const [mediaType, setMediaType] = useState("Video/Foto");
-  const [edit, setEdit] = useState(false);
   const [status, setStatus] = useState({});
   const [recording, setRecording] = useState();
   const [sound, setSound] = useState();
@@ -191,7 +190,10 @@ export default function RDModal({
     await updateDoc(saveMedia, {
       attachments: mediaArr.length !== 0 && mediaArr,
     })
-      .then(() => setLoading(false))
+      .then(() => {
+        setLoading(false);
+        onDone(false);
+      })
       .catch((err) => {
         setLoading(false);
         console.log(err);
@@ -285,8 +287,10 @@ export default function RDModal({
                 />
               )}
               <ScrollView
-                contentContainerStyle={{ alignItems: "center" }}
-                style={{ width: "100%" }}
+                contentContainerStyle={{
+                  alignItems: "center",
+                }}
+                style={{ width: "100%", marginBottom: 65 }}
               >
                 {files.map((item) => (
                   <TouchableOpacity

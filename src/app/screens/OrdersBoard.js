@@ -11,6 +11,7 @@ import RDContainer from "../../../src/components/RDContainer.js";
 import RDOrderCard from "../../components/RDOrderCard.js";
 import RDText from "../../components/RDText.js";
 import { colors } from "../../theme/colors.js";
+import RDButton from "../../components/RDButton.js";
 
 // firebase
 import { db } from "../../api/firebase";
@@ -53,6 +54,13 @@ export default function OrdersBoard({ navigation }) {
 
   return (
     <RDContainer style={{ alignItems: "center", justifyContent: null }}>
+      <RDButton
+        onPress={() => navigation.navigate("ClientSearch", { from: "order" })}
+        form
+        black
+        variant="contained"
+        label="Ordina"
+      />
       <View style={styles.toggleContainer}>
         <TouchableOpacity
           style={[
@@ -93,6 +101,7 @@ export default function OrdersBoard({ navigation }) {
             {currentOrders.map((item) => (
               <RDOrderCard
                 form
+                key={item.serviceId}
                 name={item.name}
                 time={item.time}
                 totalPrice={item.totalPrice}
@@ -117,6 +126,7 @@ export default function OrdersBoard({ navigation }) {
           {hsitoryOrders.map((item) => (
             <RDOrderCard
               form
+              key={item.serviceId}
               name={item.name}
               time={item.time}
               totalPrice={item.totalPrice}
@@ -126,6 +136,7 @@ export default function OrdersBoard({ navigation }) {
                 navigation.navigate("DisplayOrder", {
                   client: item.clientInfo,
                   order: item,
+                  from: "history",
                 })
               }
             />

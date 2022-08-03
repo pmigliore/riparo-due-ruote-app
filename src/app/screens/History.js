@@ -108,6 +108,7 @@ export default function History({ navigation }) {
                     onPress={() =>
                       navigation.navigate("ServiceForm", {
                         service: item,
+                        from: "history",
                       })
                     }
                     key={item.serviceId}
@@ -126,6 +127,7 @@ export default function History({ navigation }) {
                     onPress={() =>
                       navigation.navigate("ServiceForm", {
                         service: item,
+                        from: "history",
                       })
                     }
                     key={item.serviceId}

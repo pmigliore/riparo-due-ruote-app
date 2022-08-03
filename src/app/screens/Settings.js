@@ -28,6 +28,7 @@ export default function Settings({ navigation }) {
         <RDLogo />
       </View>
       <RDButton
+        first
         onPress={() => navigation.navigate("ChangeEmail")}
         type="list"
         label="Cambia Email"
