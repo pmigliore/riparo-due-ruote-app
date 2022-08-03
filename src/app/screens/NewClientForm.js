@@ -292,7 +292,7 @@ export default function NewClientForm({ navigation, route }) {
         )}
       </View>
       {client?.pastOrders && !creating && !editing && (
-        <View style={{ width: "100%" }}>
+        <ScrollView style={{ width: "100%", marginBottom: 80 }}>
           <RDText style={{ padding: 15 }} variant="h2">
             Storia Ordini
           </RDText>
@@ -315,7 +315,7 @@ export default function NewClientForm({ navigation, route }) {
               }
             />
           ))}
-        </View>
+        </ScrollView>
       )}
       {!editing ? (
         <View style={styles.btnContainer}>
