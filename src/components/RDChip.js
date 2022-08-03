@@ -23,7 +23,7 @@ export default function RDChip({ label, selected, onPress, key, style }) {
     >
       <Text
         style={{
-          fontSize: 16,
+          fontSize: Platform.OS === "ios" ? 16 : 12,
           fontWeight: "bold",
           color: selected ? colors.mainWhite : colors.mainGray,
         }}

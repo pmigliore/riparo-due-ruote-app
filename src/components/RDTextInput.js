@@ -34,7 +34,7 @@ export default function RDTextInput({
           borderColor: focused ? colors.mainBlack : colors.mainGray,
           color: focused ? colors.mainBlack : colors.mainGray,
           fontSize: Platform.OS === "ios" ? 16 : 14,
-          textAlignVertical: "top",
+          textAlignVertical: multiline && "top",
           ...style,
         },
       ]}

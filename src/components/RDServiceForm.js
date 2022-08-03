@@ -28,7 +28,7 @@ export default function RDFServiceForm({
         style={styles.container}
       >
         <View
-          style={[styles.subEuroContainer, { marginLeft: !checkbox && 45 }]}
+          style={[styles.subEuroContainer, { marginLeft: !checkbox ? 45 : 0 }]}
         >
           {editing && checkbox && (
             <View

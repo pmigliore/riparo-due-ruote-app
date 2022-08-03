@@ -33,7 +33,7 @@ export default function RDOrderCard({
       <View style={styles.cardTxtContainer}>
         <Text style={styles.cardTxt}>{name}</Text>
         <Text style={[styles.cardTxt, { fontSize: 12, maxWidth: 200 }]}>
-          Tempo Spedizione: {time}
+          Spedizione: {time}
         </Text>
         <Text style={styles.cardTxt}>€ {totalPrice}</Text>
       </View>
@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   cardTxt: {
-    fontSize: Platform.OS === "ios" ? 16 : 14,
+    fontSize: Platform.OS === "ios" ? 16 : 12,
     fontWeight: "bold",
     color: colors.mainWhite,
   },

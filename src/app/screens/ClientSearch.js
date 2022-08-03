@@ -78,7 +78,7 @@ export default function ClientSearch({ route, navigation }) {
                     type="client"
                     key={item.id}
                     clientName={item.firstName + " " + item.lastName}
-                    services={item.services}
+                    services={item.pastOrders ? item.pastOrders.length : 0}
                     onPress={() =>
                       navigation.navigate("NewClientForm", {
                         from: from,
@@ -93,7 +93,7 @@ export default function ClientSearch({ route, navigation }) {
                     type="client"
                     key={item.id}
                     clientName={item.firstName + " " + item.lastName}
-                    services={item.services}
+                    services={item.pastOrders ? item.pastOrders.length : 0}
                     onPress={() =>
                       navigation.navigate("NewClientForm", {
                         from: from,

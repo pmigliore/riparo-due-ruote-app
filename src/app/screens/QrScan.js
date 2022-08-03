@@ -8,7 +8,7 @@ import { db } from "../../api/firebase";
 import { collection, getDocs } from "firebase/firestore";
 
 export default function QrScan({ navigation, route }) {
-  const [hasPermission, setHasPermission] = useState(null);
+  const [hasPermission, setHasPermission] = useState("granted");
   const [scanned, setScanned] = useState(false);
 
   const { from } = route.params;

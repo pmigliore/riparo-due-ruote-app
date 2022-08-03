@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   cardTxt: {
-    fontSize: Platform.OS === "ios" ? 16 : 14,
+    fontSize: Platform.OS === "ios" ? 16 : 12,
     fontWeight: "bold",
     color: colors.mainWhite,
   },
