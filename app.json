@@ -18,13 +18,19 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "buildNumber": "2",
+      "bundleIdentifier": "RiparoDueRuote",
+      "infoPlist": {
+        "NSCameraUsageDescription": "This app uses the camera to scan qr-codes."
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.piersalvomigliore.riparo_due_ruote"
     },
     "web": {
       "favicon": "./assets/favicon.png"

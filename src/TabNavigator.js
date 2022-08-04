@@ -4,6 +4,7 @@ import {
   ActivityIndicator,
   View,
   StyleSheet,
+  Platform,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { colors } from "./theme/colors.js";
@@ -53,7 +54,7 @@ function TabNavigator({ navigation }) {
                 onPress={() => navigation.navigate("History")}
                 style={{ marginLeft: 10 }}
               >
-                <Ionicons name="time-outline" size={30} />
+                <Ionicons name="time-outline" size={Platform.IOS ? 30 : 25} />
               </TouchableOpacity>
             ),
             headerRight: ({}) => (
@@ -62,7 +63,7 @@ function TabNavigator({ navigation }) {
                   onPress={() => navigation.navigate("OrdersBoard")}
                   style={{ marginLeft: 15, marginRight: 10 }}
                 >
-                  <Ionicons name="cart-outline" size={30} />
+                  <Ionicons name="cart-outline" size={Platform.IOS ? 30 : 25} />
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() =>
@@ -72,12 +73,19 @@ function TabNavigator({ navigation }) {
                   }
                   style={{ marginLeft: 15, marginRight: 10 }}
                 >
-                  <Ionicons name="qr-code-outline" size={30} />
+                  <Ionicons
+                    name="qr-code-outline"
+                    size={Platform.IOS ? 30 : 25}
+                  />
                 </TouchableOpacity>
               </View>
             ),
             tabBarIcon: ({ color, size }) => (
-              <Ionicons name="home" color={color} size={30} />
+              <Ionicons
+                name="home"
+                color={color}
+                size={30}
+              />
             ),
             headerTitle: "Riparo Due Ruote",
           })}
@@ -87,7 +95,11 @@ function TabNavigator({ navigation }) {
           component={StatisticsScreen}
           options={{
             tabBarIcon: ({ color, size }) => (
-              <Ionicons name="stats-chart" color={color} size={30} />
+              <Ionicons
+                name="stats-chart"
+                color={color}
+                size={30}
+              />
             ),
             headerTitle: "Statistiche",
           }}
@@ -97,7 +109,11 @@ function TabNavigator({ navigation }) {
           component={SettingsSreen}
           options={{
             tabBarIcon: ({ color, size }) => (
-              <Ionicons name="cog" color={color} size={30} />
+              <Ionicons
+                name="cog"
+                color={color}
+                size={30}
+              />
             ),
             headerTitle: "Impostazioni",
           }}

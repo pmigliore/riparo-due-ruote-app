@@ -4,6 +4,7 @@ import {
   View,
   TouchableOpacity,
   ActivityIndicator,
+  ScrollView,
 } from "react-native";
 import { VictoryBar, VictoryChart, VictoryTheme } from "victory-native";
 import { monthNames } from "../../api/commonData.js";
@@ -140,7 +141,7 @@ export default function Statistics() {
           />
         </TouchableOpacity>
       </View>
-      <View
+      <ScrollView
         style={{
           width: "100%",
         }}
@@ -158,7 +159,7 @@ export default function Statistics() {
           label="Batteria"
           value={data.length > 0 ? data[3].vendite : "0"}
         />
-      </View>
+      </ScrollView>
     </View>
   );
 }
