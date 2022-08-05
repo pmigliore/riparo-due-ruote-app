@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -6,6 +6,9 @@ import {
   ScrollView,
   Image,
   ActivityIndicator,
+  TouchableWithoutFeedback,
+  TouchableOpacity,
+  Modal,
 } from "react-native";
 import uuid from "react-native-uuid";
 import RDButton from "../../../src/components/RDButton.js";
@@ -17,6 +20,7 @@ import RDForm from "../../../src/components/RDForm.js";
 import RDModal from "../../../src/components/RDModal.js";
 import { colors } from "../../theme/colors.js";
 import { monthNames } from "../../api/commonData.js";
+import SignatureScreen from "react-native-signature-canvas";
 
 // firebase
 import { db, storage } from "../../api/firebase";
@@ -41,6 +45,7 @@ export default function Service({ route, navigation }) {
   var mm = String(today.getMonth() + 1).padStart(2, "0");
   var yyyy = today.getFullYear();
   const date = dd + "/" + mm + "/" + yyyy;
+  const signatureRef = useRef();
 
   const [serviceId, setServiceId] = useState(uuid.v4());
   const [loading, setLoading] = useState(false);
@@ -169,13 +174,37 @@ export default function Service({ route, navigation }) {
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.mainWhite }}>
-      <RDModal
-        category="e-sign"
+      <Modal
+        animationType="fade"
+        transparent={true}
         visible={signModal}
-        onSign={handleOK}
         onRequestClose={() => setSignModal(false)}
-        onPressOut={() => setSignModal(false)}
-      />
+      >
+        <View
+          style={{
+            width: "100%",
+            flex: 1,
+            backgroundColor: colors.mainWhite,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <SignatureScreen
+            androidHardwareAccelerationDisabled={true}
+            clearText="Reset"
+            confirmText="Conferma"
+            ref={signatureRef}
+            onOK={handleOK}
+          />
+          <RDButton
+            black
+            style={{ marginBottom: 150 }}
+            onPress={() => setSignModal(false)}
+            variant="contained"
+            label="Annulla"
+          />
+        </View>
+      </Modal>
       <RDModal
         code={serviceId}
         clientName={client.firstName + " " + client.lastName}

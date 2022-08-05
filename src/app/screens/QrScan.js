@@ -8,7 +8,7 @@ import { db } from "../../api/firebase";
 import { collection, getDocs } from "firebase/firestore";
 
 export default function QrScan({ navigation, route }) {
-  const [hasPermission, setHasPermission] = useState("granted");
+  const [hasPermission, setHasPermission] = useState("");
   const [scanned, setScanned] = useState(false);
 
   const { from } = route.params;
@@ -22,7 +22,6 @@ export default function QrScan({ navigation, route }) {
 
   const handleBarCodeScanned = async ({ type, data }) => {
     setScanned(true);
-    console.log(data);
     try {
       if (from === "current") {
         const querySnapshot = await getDocs(

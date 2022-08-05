@@ -35,7 +35,10 @@ export default function Home({ navigation }) {
         );
       }
     );
-    setLoading(false);
+
+    setTimeout(() => {
+      setLoading(false);
+    }, 2000);
   };
 
   const addFilter = (e) => {

@@ -12,11 +12,14 @@ import { auth } from "../api/firebase.js";
 export default function Login({ navigation }) {
   let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
 
+  const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const login = () => {
+    setLoading(true);
     signInWithEmailAndPassword(auth, email, password).catch(() => {
+      setLoading(false);
       Alert.alert("Incorretto", "Email o password sono incorrette");
     });
   };
@@ -46,6 +49,7 @@ export default function Login({ navigation }) {
         label="Password dimenticata?"
       />
       <RDButton
+        loading={loading}
         disabled={!email || !password || !reg.test(email) ? true : false}
         onPress={login}
         style={{ marginTop: 80 }}

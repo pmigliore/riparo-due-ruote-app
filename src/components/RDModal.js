@@ -10,7 +10,6 @@ import {
   Image,
   Alert,
 } from "react-native";
-import SignatureScreen from "react-native-signature-canvas";
 import RDButton from "../../src/components/RDButton.js";
 import RDText from "../../src/components/RDText.js";
 import { Ionicons } from "@expo/vector-icons";
@@ -42,7 +41,6 @@ export default function RDModal({
   justView,
   onDone,
 }) {
-  const signatureRef = useRef();
   const video = useRef(null);
 
   let qrCode = "";
@@ -213,24 +211,7 @@ export default function RDModal({
         onPressOut={onPressOut}
       >
         <TouchableWithoutFeedback>
-          {category === "e-sign" ? (
-            <View
-              style={{
-                position: "absolute",
-                bottom: 0,
-                width: "100%",
-                height: 500,
-                backgroundColor: colors.mainWhite,
-              }}
-            >
-              <SignatureScreen
-                clearText="Reset"
-                confirmText="Conferma"
-                ref={signatureRef}
-                onOK={onSign}
-              />
-            </View>
-          ) : category === "attachments" ? (
+          {category === "attachments" ? (
             <SafeAreaView style={styles.container}>
               <View style={styles.containerHeader}>
                 <RDText variant="h2">Allegati</RDText>
