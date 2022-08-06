@@ -239,6 +239,7 @@ export default function ServiceForm({ route, navigation }) {
               placeholder="Importo"
               label={item.title}
               checkbox
+              uppercase
               value={item.input}
               onPress={() => selectService(section, item)}
             />
@@ -249,6 +250,7 @@ export default function ServiceForm({ route, navigation }) {
                 placeholder="Importo"
                 label={obj.title}
                 value={obj.input}
+                uppercase
                 onPress={() => selectSubService(section, item, obj)}
               />
             ))}
@@ -262,6 +264,7 @@ export default function ServiceForm({ route, navigation }) {
             checkbox
             placeholder="Importo"
             label={item.title}
+            uppercase
             value={item.input}
             onPress={() => selectService(section, item)}
           />
@@ -595,7 +598,7 @@ const styles = StyleSheet.create({
     borderColor: colors.mainGray,
     paddingTop: 10,
     backgroundColor: colors.mainWhite,
-    height: 100,
+    height: 80,
   },
   signature: {
     flex: 1,

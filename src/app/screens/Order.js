@@ -119,7 +119,8 @@ export default function Order({ route, navigation }) {
 const styles = StyleSheet.create({
   btnContainer: {
     position: "absolute",
-    bottom: 10,
+    bottom: 0,
+    paddingBottom: 10,
     width: "100%",
     alignItems: "center",
     borderTopWidth: 1,

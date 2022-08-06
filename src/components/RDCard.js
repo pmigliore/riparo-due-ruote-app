@@ -66,7 +66,10 @@ export default function RDCard({
         <View style={styles.cardTxtContainer}>
           <Text style={styles.cardTxt}>{clientName}</Text>
           {status && (
-            <Text style={[styles.cardTxt, { fontSize: 12, maxWidth: 200 }]}>
+            <Text
+              ellipsizeMode="tail"
+              style={[styles.cardTxt, { fontSize: 12, maxWidth: 200 }]}
+            >
               {status}
             </Text>
           )}

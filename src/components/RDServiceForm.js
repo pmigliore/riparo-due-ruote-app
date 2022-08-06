@@ -19,6 +19,7 @@ export default function RDFServiceForm({
   onPress,
   checkbox,
   editing,
+  uppercase,
 }) {
   return (
     <View style={[styles.euroContainer, { width: "100%" }]}>
@@ -47,7 +48,20 @@ export default function RDFServiceForm({
               />
             </View>
           )}
-          <Text style={[styles.txt, { ...labelStyle }]}>{label}</Text>
+          <Text
+            ellipsizeMode="tail"
+            numberOfLines={1}
+            style={[
+              styles.txt,
+              {
+                ...labelStyle,
+                textTransform: uppercase && "uppercase",
+                maxWidth: 250,
+              },
+            ]}
+          >
+            {label}
+          </Text>
         </View>
         <View style={styles.subEuroContainer}>
           <Ionicons name="logo-euro" color={colors.mainBlack} size={12} />

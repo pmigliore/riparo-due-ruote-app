@@ -21,6 +21,7 @@ export default function RDForm({
   onFocus,
   onBlur,
   autoFocus,
+  inputStyle,
 }) {
   return (
     <View style={styles.container}>
@@ -50,7 +51,7 @@ export default function RDForm({
               value={value}
               placeholder={placeholder ? placeholder : "Aggiungi"}
               onChangeText={onChangeText}
-              style={styles.txtInput}
+              style={[styles.txtInput, { ...inputStyle }]}
               editable={disabled}
               onFocus={onFocus}
               onBlur={onBlur}

@@ -9,6 +9,7 @@ import {
   StyleSheet,
   Image,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 import RDButton from "../../src/components/RDButton.js";
 import RDText from "../../src/components/RDText.js";
@@ -53,7 +54,11 @@ export default function RDModal({
 
   useEffect(() => {
     if (attachments || attachments !== undefined) {
+      setLoading(true);
       setFiles(attachments);
+      setTimeout(() => {
+        setLoading(false);
+      }, 5000);
     }
   }, []);
 
@@ -265,67 +270,72 @@ export default function RDModal({
                       ? stopRecording
                       : startRecording
                   }
+                  style={{marginBottom: 20}}
                 />
               )}
-              <ScrollView
-                contentContainerStyle={{
-                  alignItems: "center",
-                }}
-                style={{ width: "100%", marginBottom: 65 }}
-              >
-                {files.map((item) => (
-                  <TouchableOpacity
-                    key={item.uri}
-                    activeOpacity={item.type === "video" ? 1 : 0.5}
-                    onLongPress={() => deleteFile(item)}
-                    onPress={() => {
-                      item.type === "audio" && playSound(item);
-                    }}
-                    style={{
-                      width: "90%",
-                      maxHeight: 170,
-                      marginTop: 10,
-                    }}
-                  >
-                    {item.type === "image" ? (
-                      <Image
-                        key={item.uri}
-                        source={{ uri: item.uri }}
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                        }}
-                      />
-                    ) : item.type === "video" ? (
-                      <Video
-                        ref={video}
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                        }}
-                        source={{
-                          uri: item.uri,
-                        }}
-                        useNativeControls
-                        resizeMode="contain"
-                        isLooping
-                        onPlaybackStatusUpdate={(status) =>
-                          setStatus(() => status)
-                        }
-                      />
-                    ) : (
-                      <View style={styles.audioContainer}>
-                        <RDText
-                          variant="h2"
-                          style={{ color: colors.mainWhite }}
-                        >
-                          Play Audio
-                        </RDText>
-                      </View>
-                    )}
-                  </TouchableOpacity>
-                ))}
-              </ScrollView>
+              {loading ? (
+                <ActivityIndicator color={colors.mainBlue} size="small" />
+              ) : (
+                <ScrollView
+                  contentContainerStyle={{
+                    alignItems: "center",
+                  }}
+                  style={{ width: "100%", marginBottom: 95 }}
+                >
+                  {files.map((item) => (
+                    <TouchableOpacity
+                      key={item.uri}
+                      activeOpacity={item.type === "video" ? 1 : 0.5}
+                      onLongPress={() => deleteFile(item)}
+                      onPress={() => {
+                        item.type === "audio" && playSound(item);
+                      }}
+                      style={{
+                        width: "90%",
+                        maxHeight: 170,
+                        marginTop: 10,
+                      }}
+                    >
+                      {item.type === "image" ? (
+                        <Image
+                          key={item.uri}
+                          source={{ uri: item.uri }}
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                          }}
+                        />
+                      ) : item.type === "video" ? (
+                        <Video
+                          ref={video}
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                          }}
+                          source={{
+                            uri: item.uri,
+                          }}
+                          useNativeControls
+                          resizeMode="contain"
+                          isLooping
+                          onPlaybackStatusUpdate={(status) =>
+                            setStatus(() => status)
+                          }
+                        />
+                      ) : (
+                        <View style={styles.audioContainer}>
+                          <RDText
+                            variant="h2"
+                            style={{ color: colors.mainWhite }}
+                          >
+                            Play Audio
+                          </RDText>
+                        </View>
+                      )}
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
+              )}
               {!justView && (
                 <View style={styles.btnContainer}>
                   <RDButton
@@ -424,7 +434,7 @@ const styles = StyleSheet.create({
     borderColor: colors.mainGray,
     paddingTop: 10,
     backgroundColor: colors.mainWhite,
-    height: 100,
+    height: 80,
   },
   audioContainer: {
     width: "100%",
@@ -434,13 +444,4 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     height: 50,
   },
-  position: "absolute",
-  bottom: 0,
-  width: "100%",
-  alignItems: "center",
-  borderTopWidth: 1,
-  borderColor: colors.mainGray,
-  paddingTop: 10,
-  backgroundColor: colors.mainWhite,
-  height: 100,
 });

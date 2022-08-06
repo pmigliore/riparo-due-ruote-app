@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "riparo_due_ruote",
+    "name": "Riparo Due Ruote",
     "slug": "riparo_due_ruote",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -26,6 +26,7 @@
       }
     },
     "android": {
+      "versionCode": 2,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"

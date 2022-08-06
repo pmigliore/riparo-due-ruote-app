@@ -304,38 +304,66 @@ export default function Service({ route, navigation }) {
             )}
             <RDText variant="h2">Note Informative</RDText>
             <RDText variant="body">
-              Lorem ipsum dolor sit amet, regione consulatu duo no. Sit rebum
-              nobis senserit an, no scripta discere vel. Cum ex doming
-              disputando, eu vim quidam indoctum. Dicta legere id ius. Veri
-              reformidans has ei, ex per saepe ullamcorper, ut fugit periculis
-              eam. Adhuc aeque corpora nec te, ex iudico eloquentiam mel. Pro
-              aliquip deseruisse ad, ex summo tacimates eum, eu augue sensibus
-              urbanitas duo. Sed illum rationibus ei. An sit scripta vivendum,
-              nec id enim magna. Ne viderer corrumpit per, eos movet salutatus
-              at. Delectus gubergren accommodare vix at. Lorem ipsum dolor sit
-              amet, regione consulatu duo no. Sit rebum nobis senserit an, no
-              scripta discere vel. Cum ex doming disputando, eu vim quidam
-              indoctum. Dicta legere id ius. Veri reformidans has ei, ex per
-              saepe ullamcorper, ut fugit periculis eam. Adhuc aeque corpora nec
-              te, ex iudico eloquentiam mel. Pro aliquip deseruisse ad, ex summo
-              tacimates eum, eu augue sensibus urbanitas duo. Sed illum
-              rationibus ei. An sit scripta vivendum, nec id enim magna. Ne
-              viderer corrumpit per, eos movet salutatus at. Delectus gubergren
-              accommodare vix at.
+              1. Il prodotto per essere riparato in garanzia, non deve avere
+              danneggiamenti di nessun tipo, manomissioni, o alterazioni, la
+              Garanzia non viene applicata su prodotti con evidenti segni di
+              caduta o rotture varie, non è possibile effettuare riparazioni
+              parziali anche se il difetto è di natura diversa, verrà gestito
+              solo fuori garanzia. 2. Le riparazioni fuori garanzia si pagano
+              alla consegna. 3. per preventivi non accettati monopattini; ebike
+              e batterie saranno addebitati 20 euro. 4. La garanzia dura tre
+              mesi dalla data di consegna e si riferisce solo ed esclusivamente
+              al ricambio sostituito. 5. La garanzia sul lavoro effettuato sarà
+              di 3 mesi dalla data di riparazione ove non diversamente segnalato
+              e copre soltanto lo stesso difetto sopra indicato. 6. Si fa
+              presente che l'apertura di un apparecchio per valutare/ricercare
+              un guasto, qualora non si procede alla riparazione può modificare
+              la precedente situazione funzionale ed estetica. 7. Si fa presente
+              che il centro non si assume responsabilità per eventuali accessori
+              consegnati e non fatti dichiarare sulla scheda al momento
+              dell'accettazione. 8. Si prega la spett.le clientela di
+              controllare i dati sulla scheda di accettazione, il centro non si
+              assume responsabilità per reclami successivi. 9. Si fa presente
+              alla spett.le clientela di controllare l'apparato al momento del
+              ritiro. Il laboratorio declina da ogni responsabilità per reclami
+              sull'eventuale stato estetico dell'apparato. 10. Il Cliente
+              dichiara che l'apparato non è di provenienza illecita. 11. le
+              riparazioni nell'ambito dei 40 euro per i monopattini; 20 euro per
+              bici ed e-bike verranno effettuate senza preavviso. Qualsiasi
+              fatto, danno o infortunio conseguente alla riparazione ed all'uso
+              della mezzo riparato è imputabile al solo utente. L'utente è
+              quindi responsabile dei danni causati durante l'utilizzo del mezzo
+              a se stesso, a terzi, a cose ed alla bicicletta. Ad Siculiana
+              Media srl, non potrà essere richiesta alcuna forma di indennizzo.
+              12. Non siamo responsabili per la perdita dei dati. Per qualsiasi
+              riparazione verra' effettuato un reset dei dati, non si accettano
+              reclami. il cliente ci solleva da ogni responsabilita. 13. N.B.
+              per il Reparto Informatico/Audio Video fino ad un massimo di euro
+              40,00 (quaranta) la riparazione e' diretta senza emissione del
+              preventivo anche se richiesto. 14. Il preventivo rifiutato per il
+              reparto informatico, audio video, ed altri ha un costo Max di euro
+              20.00 (venti/00). 15. Se entro 60gg dalla data di consegna il
+              prodotto non verrà ritirato l'azienda procederà allo smaltimento
+              dello stesso per recuperare le spese sostenute e i relativi
+              ricambi. Autorizzazione al trattamento dei dati personali su
+              esposti resa ai sensi dell'Art. 13 Regolamento Europeo 679/2016
+              (GDPR)
             </RDText>
             <RDText style={{ marginTop: 10 }} variant="h2">
               Informativa
             </RDText>
             <RDText variant="body">
-              Lorem ipsum dolor sit amet, regione consulatu duo no. Sit rebum
-              nobis senserit an, no scripta discere vel. Cum ex doming
-              disputando, eu vim quidam indoctum. Dicta legere id ius. Veri
-              reformidans has ei, ex per saepe ullamcorper, ut fugit periculis
-              eam. Adhuc aeque corpora nec te, ex iudico eloquentiam mel. Pro
-              aliquip deseruisse ad, ex summo tacimates eum, eu augue sensibus
-              urbanitas duo. Sed illum rationibus ei. An sit scripta vivendum,
-              nec id enim magna. Ne viderer corrumpit per, eos movet salutatus
-              at. Delectus gubergren accommodare vix at.
+              Firmando questo modulo autorizzo automaticamente il ricevente al
+              trattamento dei dati personali. Dichiaro di aver ricevuto dal
+              Titolare del trattamento dei dati l'informativa di cui all'art. 13
+              del D.Lgs. 196/2003, circa le finalità e le modalità del
+              trattamento dei miei dati personali e sensibili e acconsento a
+              tale trattamento e alla loro comunicazione a terzi. Il ricevente
+              (Siculiana Media srl) non si assume nessuna responsabilità per
+              l'eventuale perdita di dati, pertanto, si prega di effettuare un
+              backup prima di consegnarlo al ricevente. Autorizzo, inoltre, allo
+              smaltimento del dispositivo in caso di non ritiro entro 60 giorni
+              dall'avvenuta riparazione.
             </RDText>
             <RDText style={{ marginTop: 10 }} variant="h2">
               Firma Cliente

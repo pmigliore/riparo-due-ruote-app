@@ -231,6 +231,22 @@ export default function NewClientForm({ navigation, route }) {
         onChangeText={(e) => setEmail(e)}
       />
       <View style={styles.subContainer}>
+        <RDText variant="h2">Note</RDText>
+        {creating || editing ? (
+          <RDTextInput
+            value={notes}
+            onChangeText={(e) => setNotes(e)}
+            style={{ width: "100%", marginTop: 10 }}
+            multiline
+            placeholder="Inseriscie note sul cliente..."
+          />
+        ) : (
+          <RDText variant="h2" style={{ fontWeight: "normal" }}>
+            {notes ? notes : "Nessuna nota"}
+          </RDText>
+        )}
+      </View>
+      <View style={styles.subContainer}>
         <RDText variant="h2">Voto cliente</RDText>
         <View style={styles.chipContainer}>
           <RDChip
@@ -274,22 +290,6 @@ export default function NewClientForm({ navigation, route }) {
             label="1"
           />
         </View>
-      </View>
-      <View style={styles.subContainer}>
-        <RDText variant="h2">Note</RDText>
-        {creating || editing ? (
-          <RDTextInput
-            value={notes}
-            onChangeText={(e) => setNotes(e)}
-            style={{ width: "100%", marginTop: 10 }}
-            multiline
-            placeholder="Inseriscie note sul cliente..."
-          />
-        ) : (
-          <RDText variant="h2" style={{ fontWeight: "normal" }}>
-            {notes ? notes : "Nessuna nota"}
-          </RDText>
-        )}
       </View>
       {client?.pastOrders && !creating && !editing && (
         <ScrollView style={{ width: "100%", marginBottom: 80 }}>
@@ -389,7 +389,8 @@ const styles = StyleSheet.create({
   },
   btnContainer: {
     position: "absolute",
-    bottom: 10,
+    bottom: 0,
+    paddingBottom: 10,
     width: "100%",
     alignItems: "center",
     borderTopWidth: 1,
