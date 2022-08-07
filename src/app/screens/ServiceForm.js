@@ -39,7 +39,6 @@ export default function ServiceForm({ route, navigation }) {
   const [currentValue, setCurrentValue] = useState("");
   const [cancelled, setCancelled] = useState(false);
 
-  console.log(service);
   useEffect(() => {
     if (from === "history") {
       setJustView(true);
@@ -474,14 +473,14 @@ export default function ServiceForm({ route, navigation }) {
             <RDButton
               loading={loading}
               onPress={() =>
-                Alert.alert("Sei sicuro?", "Queso servizio verra' termina", [
+                Alert.alert("Sei sicuro?", "Queso servizio verra' terminato", [
                   {
                     text: "Cancel",
                     style: "cancel",
                   },
                   {
                     text: "OK",
-                    onPress: () => finishService("Terminato"),
+                    onPress: () => finishService("Cancellato dal cliente"),
                   },
                 ])
               }
