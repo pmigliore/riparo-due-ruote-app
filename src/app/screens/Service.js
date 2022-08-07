@@ -9,6 +9,8 @@ import {
   TouchableWithoutFeedback,
   TouchableOpacity,
   Modal,
+  Alert,
+  Linking,
 } from "react-native";
 import uuid from "react-native-uuid";
 import RDButton from "../../../src/components/RDButton.js";
@@ -172,6 +174,15 @@ export default function Service({ route, navigation }) {
     setQrModal(true);
   };
 
+  const initiateWhatsAppSMS = () => {
+    const whatsAppMsg = `Ricevuta per il servizio di ${date}: https://riparodueruote-ce56e.web.app/receipt/${serviceId}`;
+    let url =
+      "whatsapp://send?text=" + whatsAppMsg + "&phone=1" + client.phoneNumber;
+    Linking.openURL(url).catch(() => {
+      Alert.alert("Make sure Whatsapp installed on your device");
+    });
+  };
+
   return (
     <View style={{ flex: 1, backgroundColor: colors.mainWhite }}>
       <Modal
@@ -213,6 +224,7 @@ export default function Service({ route, navigation }) {
         visible={qrModal}
         onRequestClose={() => navigation.navigate("TabNavigator")}
         onClose={() => navigation.navigate("TabNavigator")}
+        sendTxt={initiateWhatsAppSMS}
       />
       <ScrollView contentContainerStyle={{ paddingBottom: 150 }}>
         <RDContainer style={{ justifyContent: null }}>

@@ -41,6 +41,7 @@ export default function RDModal({
   serviceId,
   justView,
   onDone,
+  sendTxt,
 }) {
   const video = useRef(null);
 
@@ -270,7 +271,7 @@ export default function RDModal({
                       ? stopRecording
                       : startRecording
                   }
-                  style={{marginBottom: 20}}
+                  style={{ marginBottom: 20 }}
                 />
               )}
               {loading ? (
@@ -396,6 +397,30 @@ export default function RDModal({
                   Stampa
                 </RDText>
                 <Ionicons name="print" color={colors.mainWhite} size={30} />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={sendTxt}
+                style={{
+                  backgroundColor: "#25D366",
+                  width: "90%",
+                  height: 51,
+                  marginTop: 10,
+                  flexDirection: "row",
+                  borderRadius: 20,
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  paddingRight: 15,
+                  paddingLeft: 15,
+                }}
+              >
+                <RDText variant="h2" style={{ color: colors.mainWhite }}>
+                  Manda Ricevuta
+                </RDText>
+                <Ionicons
+                  name="logo-whatsapp"
+                  color={colors.mainWhite}
+                  size={30}
+                />
               </TouchableOpacity>
             </SafeAreaView>
           )}

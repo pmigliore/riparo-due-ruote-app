@@ -8,6 +8,8 @@ import {
   Modal,
   TouchableWithoutFeedback,
   Alert,
+  ActivityIndicator,
+  Linking,
 } from "react-native";
 import RDButton from "../../../src/components/RDButton.js";
 import RDTextInput from "../../../src/components/RDTextInput.js";
@@ -17,6 +19,7 @@ import RDForm from "../../../src/components/RDForm.js";
 import RDServiceForm from "../../../src/components/RDServiceForm.js";
 import RDModal from "../../../src/components/RDModal.js";
 import { colors } from "../../theme/colors.js";
+import { Form as EstimateForm } from "../../components/Form";
 
 // firebase
 import { db } from "../../api/firebase";
@@ -30,121 +33,13 @@ export default function ServiceForm({ route, navigation }) {
   const [step, setStep] = useState(1);
   const [attachModal, setAttachModal] = useState(false);
   const [notes, setNotes] = useState("");
-  const [estimate, setEstimate] = useState([
-    {
-      id: 0,
-      title: "Telaio e sospensioni",
-      data: [
-        {
-          id: 0,
-          selected: false,
-          title: "Movimento cetn. e/o cuscinetti",
-          input: "",
-        },
-        {
-          id: 1,
-          selected: false,
-          title: "Serie sterzo e/o cuscinetti",
-          input: "",
-          more: [
-            {
-              id: 0,
-              title: "Sostituzione e Lubrificaz. €15",
-              input: "",
-            },
-          ],
-        },
-        {
-          id: 2,
-          selected: false,
-          title: "Manubrio",
-          input: "",
-        },
-        {
-          id: 3,
-          selected: false,
-          title: "Attacco Manubrio",
-          input: "",
-          more: [
-            {
-              id: 0,
-              title: "Sostituzione €10",
-              input: "",
-            },
-          ],
-        },
-        {
-          id: 4,
-          selected: false,
-          title: "Ammortizzatore (Manut. o Rev)",
-          input: "",
-        },
-        {
-          id: 5,
-          selected: false,
-          title: "Forcella (Manut. o Rev)",
-          input: "",
-        },
-        {
-          id: 6,
-          selected: false,
-          title: "Espander-Ragnetto",
-          input: "",
-        },
-        {
-          id: 7,
-          selected: false,
-          title: "Guarnizione-oring-paraolio",
-          input: "",
-        },
-        {
-          id: 8,
-          selected: false,
-          title: "Olio",
-          input: "",
-          more: [
-            {
-              id: 0,
-              title: "Sost. Forcella €25",
-              input: "",
-            },
-            {
-              id: 1,
-              title: "Sost. Ammortizzatore €15",
-              input: "",
-            },
-            {
-              id: 2,
-              title: "Manutenzione da €50",
-              input: "",
-            },
-            {
-              id: 3,
-              title: "Revisione da €100",
-              input: "",
-            },
-          ],
-        },
-        {
-          id: 9,
-          selected: false,
-          title: "Telaio o Bici Completa",
-          input: "",
-          more: [
-            {
-              id: 0,
-              title: "Sostituzione montaggio da €100",
-              input: "",
-            },
-          ],
-        },
-      ],
-    },
-  ]);
+  const [estimate, setEstimate] = useState([]);
   const [modal, setModal] = useState(false);
   const [currentField, setCurrentField] = useState({});
   const [currentValue, setCurrentValue] = useState("");
+  const [cancelled, setCancelled] = useState(false);
 
+  console.log(service);
   useEffect(() => {
     if (from === "history") {
       setJustView(true);
@@ -156,16 +51,20 @@ export default function ServiceForm({ route, navigation }) {
       setStep(1);
     } else if (service.status === "Preventivo confermato") {
       setStep(2);
+    } else if (service.status === "Preventivo rifiutato") {
+      setCancelled(true);
     } else if (service.status === "In attesa di ritiro") {
       setStep(3);
     }
     if (service.estimate) {
-      setEstimate([service.estimate]);
+      setEstimate(service.estimate);
+    } else {
+      setEstimate(EstimateForm);
     }
     if (service.serviceNotes) {
       setNotes(service.serviceNotes);
     }
-  }, []);
+  }, [setEstimate]);
 
   const selectService = (...args) => {
     let section = args[0];
@@ -228,49 +127,61 @@ export default function ServiceForm({ route, navigation }) {
   };
 
   const Form = (props) =>
-    estimate[props.section].data.map((item) => {
-      let section = props.section;
-      if (item.more) {
-        return (
-          <View key={item.title}>
+    estimate.length > 0 ? (
+      estimate[props.section].data.map((item) => {
+        let section = props.section;
+        if (item.more) {
+          return (
+            <View key={item.title}>
+              <RDServiceForm
+                editing={
+                  step === 1 && from !== "history" && !cancelled ? true : false
+                }
+                key={item.id}
+                placeholder="Importo"
+                label={item.title}
+                checkbox
+                uppercase
+                value={item.input}
+                onPress={() => selectService(section, item)}
+              />
+              {item.more.map((obj) => (
+                <RDServiceForm
+                  key={obj.id}
+                  editing={
+                    step === 1 && from !== "history" && !cancelled
+                      ? true
+                      : false
+                  }
+                  placeholder="Importo"
+                  label={obj.title}
+                  value={obj.input}
+                  uppercase
+                  onPress={() => selectSubService(section, item, obj)}
+                />
+              ))}
+            </View>
+          );
+        } else {
+          return (
             <RDServiceForm
-              editing={step === 1 && from !== "history" ? true : false}
+              editing={
+                step === 1 && from !== "history" && !cancelled ? true : false
+              }
               key={item.id}
+              checkbox
               placeholder="Importo"
               label={item.title}
-              checkbox
               uppercase
               value={item.input}
               onPress={() => selectService(section, item)}
             />
-            {item.more.map((obj) => (
-              <RDServiceForm
-                key={obj.id}
-                editing={step === 1 && from !== "history" ? true : false}
-                placeholder="Importo"
-                label={obj.title}
-                value={obj.input}
-                uppercase
-                onPress={() => selectSubService(section, item, obj)}
-              />
-            ))}
-          </View>
-        );
-      } else {
-        return (
-          <RDServiceForm
-            editing={step === 1 && from !== "history" ? true : false}
-            key={item.id}
-            checkbox
-            placeholder="Importo"
-            label={item.title}
-            uppercase
-            value={item.input}
-            onPress={() => selectService(section, item)}
-          />
-        );
-      }
-    });
+          );
+        }
+      })
+    ) : (
+      <ActivityIndicator color={colors.mainBlack} size="small" />
+    );
 
   const moveOn = async () => {
     setLoading(true);
@@ -311,9 +222,21 @@ export default function ServiceForm({ route, navigation }) {
       status:
         step === 1 ? "In attesa di conferma preventivo" : "In attesa di ritiro",
       serviceNotes: notes,
-      estimate: estimate[0],
+      estimate: estimate,
     })
-      .then(() => navigation.goBack())
+      .then(() => {
+        navigation.goBack();
+
+        if (step === 1) {
+          const msg = `Preventivo per il servizio di ${service.date}: https://riparodueruote-ce56e.web.app/estimate/${service.serviceId}`;
+          initiateWhatsAppSMS(msg);
+        }
+
+        if (step === 2) {
+          const msg = `Il servizio iniziato il ${service.date} e' terminato. Dispositivo pronto per il ritiro.`;
+          initiateWhatsAppSMS(msg);
+        }
+      })
       .catch((err) => {
         setLoading(false);
         console.log(err);
@@ -335,7 +258,7 @@ export default function ServiceForm({ route, navigation }) {
       stage: "Finito",
       status: e,
       serviceNotes: notes,
-      estimate: estimate[0],
+      estimate: estimate,
     });
 
     const pastService = await getDoc(currentService);
@@ -368,6 +291,17 @@ export default function ServiceForm({ route, navigation }) {
     });
 
     await deleteDoc(currentService).then(() => navigation.goBack());
+  };
+
+  const initiateWhatsAppSMS = (whatsAppMsg) => {
+    let url =
+      "whatsapp://send?text=" +
+      whatsAppMsg +
+      "&phone=1" +
+      service.clientInfo.phoneNumber;
+    Linking.openURL(url).catch(() => {
+      Alert.alert("Make sure Whatsapp installed on your device");
+    });
   };
 
   return (
@@ -512,11 +446,49 @@ export default function ServiceForm({ route, navigation }) {
             Telaio e Sospensioni
           </RDText>
           <Form section={0} />
+          <RDText style={{ marginTop: 20 }} variant="h3">
+            Trasmissione
+          </RDText>
+          <Form section={1} />
+          <RDText style={{ marginTop: 20 }} variant="h3">
+            Freni
+          </RDText>
+          <Form section={2} />
+          <RDText style={{ marginTop: 20 }} variant="h3">
+            Ruote
+          </RDText>
+          <Form section={3} />
+          <RDText style={{ marginTop: 20 }} variant="h3">
+            Accessori
+          </RDText>
+          <Form section={4} />
+          <RDText style={{ marginTop: 20 }} variant="h3">
+            Controlli e Regolazione
+          </RDText>
+          <Form section={5} />
         </RDContainer>
       </ScrollView>
       {!justView && (
         <View style={styles.btnContainer}>
-          {step === 1 ? (
+          {cancelled ? (
+            <RDButton
+              loading={loading}
+              onPress={() =>
+                Alert.alert("Sei sicuro?", "Queso servizio verra' termina", [
+                  {
+                    text: "Cancel",
+                    style: "cancel",
+                  },
+                  {
+                    text: "OK",
+                    onPress: () => finishService("Terminato"),
+                  },
+                ])
+              }
+              variant="contained"
+              label="Termina Servizio"
+            />
+          ) : step === 1 ? (
             <RDButton
               loading={loading}
               onPress={moveOn}
@@ -532,20 +504,16 @@ export default function ServiceForm({ route, navigation }) {
               <RDButton
                 loading={loading}
                 onPress={() =>
-                  Alert.alert(
-                    "Sei sicuro?",
-                    "Queso servizio verra cancellato permanentemente",
-                    [
-                      {
-                        text: "Cancel",
-                        style: "cancel",
-                      },
-                      {
-                        text: "OK",
-                        onPress: () => finishService("Cancellato"),
-                      },
-                    ]
-                  )
+                  Alert.alert("Sei sicuro?", "Queso servizio verra' Cancella", [
+                    {
+                      text: "Cancel",
+                      style: "cancel",
+                    },
+                    {
+                      text: "OK",
+                      onPress: () => finishService("Cancellato"),
+                    },
+                  ])
                 }
                 variant="contained"
                 label="Cancella Servizio"
