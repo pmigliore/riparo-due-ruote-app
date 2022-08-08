@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Linking, Alert } from "react-native";
 import RDButton from "../../components/RDButton";
 import RDContainer from "../../components/RDContainer";
 import RDForm from "../../components/RDForm";
@@ -30,6 +30,7 @@ export default function Order({ route, navigation }) {
   const [totalPrice, setTotalPrice] = useState("");
 
   const uploadToDatabase = async () => {
+    setLoading(true);
     const startOrder = doc(db, "services", "allOrders", "current", orderId);
     await setDoc(startOrder, {
       clientInfo: client,
@@ -44,11 +45,23 @@ export default function Order({ route, navigation }) {
       stage: "Ordine",
       status: "In spedizione",
     })
-      .then(() => navigation.navigate("TabNavigator"))
+      .then(() => {
+        navigation.navigate("TabNavigator");
+        initiateWhatsAppSMS();
+      })
       .catch((err) => {
         setLoading(false);
         console.log(err);
       });
+  };
+
+  const initiateWhatsAppSMS = () => {
+    const whatsAppMsg = `Il tuo ordine per ${name} e' stato iniziato: tempo di spedizione ${time}`;
+    let url =
+      "whatsapp://send?text=" + whatsAppMsg + "&phone=1" + client.phoneNumber;
+    Linking.openURL(url).catch(() => {
+      Alert.alert("Make sure Whatsapp installed on your device");
+    });
   };
 
   return (
@@ -105,7 +118,7 @@ export default function Order({ route, navigation }) {
       />
       <View style={styles.btnContainer}>
         <RDButton
-          disabled={!totalPrice || !time || (!name && true)}
+          disabled={(!totalPrice || !time || !name) && true}
           onPress={uploadToDatabase}
           loading={loading}
           variant="contained"

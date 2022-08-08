@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Linking, Alert } from "react-native";
 import RDButton from "../../components/RDButton";
 import RDContainer from "../../components/RDContainer";
 import RDForm from "../../components/RDForm";
@@ -16,6 +16,7 @@ export default function DisplayOrder({ route, navigation }) {
   const [loading, setLoading] = useState(false);
 
   const updateDatabase = async () => {
+    setLoading(true);
     let pastOrders = [];
 
     const currentService = doc(
@@ -29,9 +30,15 @@ export default function DisplayOrder({ route, navigation }) {
     await updateDoc(currentService, {
       status: "Arrivato",
       type: "Order",
+    }).catch((err) => {
+      setLoading(false);
+      console.log(err);
     });
 
-    const pastService = await getDoc(currentService);
+    const pastService = await getDoc(currentService).catch((err) => {
+      setLoading(false);
+      console.log(err);
+    });
 
     const historyService = doc(
       db,
@@ -48,7 +55,10 @@ export default function DisplayOrder({ route, navigation }) {
 
     const addToPastOrders = doc(db, "clients", order.clientInfo.id);
 
-    const client = await getDoc(addToPastOrders);
+    const client = await getDoc(addToPastOrders).catch((err) => {
+      setLoading(false);
+      console.log(err);
+    });
 
     if (client.data().pastOrders !== undefined) {
       pastOrders = client.data().pastOrders;
@@ -58,9 +68,29 @@ export default function DisplayOrder({ route, navigation }) {
 
     await updateDoc(addToPastOrders, {
       pastOrders: pastOrders,
+    }).catch((err) => {
+      setLoading(false);
+      console.log(err);
     });
 
-    await deleteDoc(currentService).then(() => navigation.goBack());
+    await deleteDoc(currentService)
+      .then(() => {
+        navigation.navigate("TabNavigator");
+        initiateWhatsAppSMS();
+      })
+      .catch((err) => {
+        setLoading(false);
+        console.log(err);
+      });
+  };
+
+  const initiateWhatsAppSMS = () => {
+    const whatsAppMsg = `Il tuo ordine per ${order.name} e' arrivato`;
+    let url =
+      "whatsapp://send?text=" + whatsAppMsg + "&phone=1" + client.phoneNumber;
+    Linking.openURL(url).catch(() => {
+      Alert.alert("Make sure Whatsapp installed on your device");
+    });
   };
 
   return (

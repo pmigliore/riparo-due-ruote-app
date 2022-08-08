@@ -16,6 +16,11 @@ import RDContainer from "../../../src/components/RDContainer.js";
 import RDForm from "../../../src/components/RDForm.js";
 import RDSearchInput from "../../../src/components/RDSearchInput.js";
 import { colors } from "../../theme/colors.js";
+import {
+  isPossiblePhoneNumber,
+  isValidPhoneNumber,
+  validatePhoneNumberLength,
+} from "libphonenumber-js";
 
 // firebase
 import { db } from "../../api/firebase";
@@ -97,25 +102,29 @@ export default function NewClientForm({ navigation, route }) {
   };
 
   const createClient = () => {
-    setLoading(true);
-    if (creating) {
-      const addClient = doc(db, "clients", newId);
-      setDoc(addClient, {
-        id: newId,
-        firstName: firstName,
-        lastName: lastName,
-        phoneNumber: phoneNumber,
-        email: email,
-        score: score,
-        notes: notes,
-      })
-        .then(() => goNext())
-        .catch((err) => {
-          setLoading(false);
-          console.log(err);
-        });
+    if (phoneNumber.length === 10) {
+      setLoading(true);
+      if (creating) {
+        const addClient = doc(db, "clients", newId);
+        setDoc(addClient, {
+          id: newId,
+          firstName: firstName,
+          lastName: lastName,
+          phoneNumber: phoneNumber,
+          email: email,
+          score: score,
+          notes: notes,
+        })
+          .then(() => goNext())
+          .catch((err) => {
+            setLoading(false);
+            console.log(err);
+          });
+      } else {
+        goNext();
+      }
     } else {
-      goNext();
+      Alert.alert("Errore", "Numero di telefono invalido");
     }
   };
 

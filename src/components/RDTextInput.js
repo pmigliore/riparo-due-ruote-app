@@ -44,7 +44,7 @@ export default function RDTextInput({
       onBlur={() => setFocused(false)}
       secureTextEntry={secureTextEntry}
       autoFocus={autoFocus}
-      autoCapitalize={!multiline ? "none" : "sentences"}
+      autoCapitalize={!multiline ? "sentences" : "none"}
       autoCorrect={false}
     />
   );
