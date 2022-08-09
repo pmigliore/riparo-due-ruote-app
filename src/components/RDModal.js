@@ -47,7 +47,10 @@ export default function RDModal({
 
   let qrCode = "";
   const [loading, setLoading] = useState(false);
-  const [files, setFiles] = useState([]);
+  //const [files, setFiles] = useState([]);
+  const [videos, setVideos] = useState([]);
+  const [images, setImages] = useState([]);
+  const [audios, setAudios] = useState([]);
   const [mediaType, setMediaType] = useState("Video/Foto");
   const [status, setStatus] = useState({});
   const [recording, setRecording] = useState();
@@ -56,12 +59,33 @@ export default function RDModal({
   useEffect(() => {
     if (attachments || attachments !== undefined) {
       setLoading(true);
-      setFiles(attachments);
-      setTimeout(() => {
+
+      async function fetchMyAPI() {
+        await getCurrentFiles(attachments);
         setLoading(false);
-      }, 5000);
+      }
+
+      fetchMyAPI();
     }
   }, []);
+
+  const getCurrentFiles = (attachments) => {
+    for (let i = 0; i < attachments.length; i++) {
+      if (attachments[i].type === "video") {
+        let arr = videos;
+        arr.push(attachments[i]);
+        setVideos([...arr]);
+      } else if (attachments[i].type === "image") {
+        let arr = images;
+        arr.push(attachments[i]);
+        setImages([...arr]);
+      } else {
+        let arr = audios;
+        arr.push(attachments[i]);
+        setAudios([...arr]);
+      }
+    }
+  };
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -72,9 +96,20 @@ export default function RDModal({
     });
 
     if (!result.cancelled) {
-      let arr = files;
-      arr.push(result);
-      setFiles([...arr]);
+      console.log(result);
+      if (result.type === "video") {
+        let arr = videos;
+        arr.push(result);
+        setVideos([...arr]);
+      } else if (result.type === "image") {
+        let arr = images;
+        arr.push(result);
+        setImages([...arr]);
+      } else {
+        let arr = audios;
+        arr.push(result);
+        setAudios([...arr]);
+      }
     }
   };
 
@@ -102,9 +137,9 @@ export default function RDModal({
       uri: uri,
       type: "audio",
     };
-    let arr = files;
+    let arr = audios;
     arr.push(object);
-    setFiles([...arr]);
+    setAudios([...arr]);
   };
 
   const playSound = async (e) => {
@@ -122,11 +157,29 @@ export default function RDModal({
       {
         text: "Elimina",
         onPress: () => {
-          let arr = files;
-          for (let i = 0; i < files.length; i++) {
-            if (files[i].uri === e.uri) {
-              arr.splice(i, 1);
-              setFiles([...arr]);
+          if (e.type === "image") {
+            let arr = images;
+            for (let i = 0; i < images.length; i++) {
+              if (images[i].uri === e.uri) {
+                arr.splice(i, 1);
+                setImages([...arr]);
+              }
+            }
+          } else if (e.type === "video") {
+            let arr = videos;
+            for (let i = 0; i < videos.length; i++) {
+              if (videos[i].uri === e.uri) {
+                arr.splice(i, 1);
+                setVideos([...arr]);
+              }
+            }
+          } else {
+            let arr = audios;
+            for (let i = 0; i < audios.length; i++) {
+              if (audios[i].uri === e.uri) {
+                arr.splice(i, 1);
+                setAudios([...arr]);
+              }
             }
           }
         },
@@ -161,18 +214,57 @@ export default function RDModal({
 
   const saveAttach = async () => {
     setLoading(true);
+
+    let allArr = [];
+
+    if (videos.length > 0) {
+      const res = await save(videos, "video/mp4");
+      allArr = [...allArr, ...res];
+    }
+
+    if (images.length > 0) {
+      const res = await save(images, "image/jpeg");
+      allArr = [...allArr, ...res];
+    }
+
+    if (audios.length > 0) {
+      const res = await save(audios, "audio/mpeg");
+      allArr = [...allArr, ...res];
+    }
+
+    const saveMedia = doc(db, "services", "allServices", "current", serviceId);
+    await updateDoc(saveMedia, {
+      attachments: allArr.length !== 0 && allArr,
+    })
+      .then(() => {
+        setLoading(false);
+        onDone(false);
+      })
+      .catch((err) => {
+        setLoading(false);
+        console.log(err);
+      });
+  };
+
+  const save = async (files, type) => {
     let mediaArr = [];
 
     const metadata = {
-      contentType: null,
+      contentType: type,
     };
 
     for (let i = 0; i < files.length; i++) {
       if (!files[i].uploaded) {
-        const response = await fetch(files[i].uri);
+        const response = await fetch(files[i].uri).catch((err) =>
+          console.log(err)
+        );
+
         const blob = await response.blob();
+
         var ref = storageUpload(storage, `media/${serviceId}/${Math.random()}`);
-        await uploadBytes(ref, blob, metadata);
+
+        await uploadBytes(ref, blob, metadata).catch((err) => console.log(err));
+
         await getDownloadURL(ref)
           .then((metadata) => {
             let obj = {
@@ -190,18 +282,7 @@ export default function RDModal({
       }
     }
 
-    const saveMedia = doc(db, "services", "allServices", "current", serviceId);
-    await updateDoc(saveMedia, {
-      attachments: mediaArr.length !== 0 && mediaArr,
-    })
-      .then(() => {
-        setLoading(false);
-        onDone(false);
-      })
-      .catch((err) => {
-        setLoading(false);
-        console.log(err);
-      });
+    return mediaArr;
   };
 
   return (
@@ -283,7 +364,7 @@ export default function RDModal({
                   }}
                   style={{ width: "100%", marginBottom: 95 }}
                 >
-                  {files.map((item) => (
+                  {[...videos, ...images, ...audios].map((item) => (
                     <TouchableOpacity
                       key={item.uri}
                       activeOpacity={item.type === "video" ? 1 : 0.5}

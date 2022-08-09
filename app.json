@@ -19,14 +19,14 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "buildNumber": "3",
+      "buildNumber": "4",
       "bundleIdentifier": "RiparoDueRuote",
       "infoPlist": {
         "NSCameraUsageDescription": "This app uses the camera to scan qr-codes."
       }
     },
     "android": {
-      "versionCode": 3,
+      "versionCode": 4,
       "adaptiveIcon": {
         "foregroundImage": "./assets/RDlogo.png",
         "backgroundColor": "#FFFFFF"
