@@ -5,13 +5,13 @@ import { getFunctions } from "firebase/functions";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBwmHhAth2p8gbK_jY9lshQU9FtFgU8qXA",
-  authDomain: "riparodueruote-ce56e.firebaseapp.com",
-  projectId: "riparodueruote-ce56e",
-  storageBucket: "riparodueruote-ce56e.appspot.com",
-  messagingSenderId: "226699245066",
-  appId: "1:226699245066:web:9c184010f18c718096d1f3",
-  measurementId: "G-EFZ0WQZJKW",
+  apiKey: "XXXXXXXXXXXXXXXXXX",
+  authDomain: "XXXXXXXXXXXXXXXXXX",
+  projectId: "XXXXXXXXXXXXXXXXXX",
+  storageBucket: "XXXXXXXXXXXXXXXXXX",
+  messagingSenderId: "XXXXXXXXXXXXXXXXXX",
+  appId: "XXXXXXXXXXXXXXXXXX",
+  measurementId: "XXXXXXXXXXXXXXXXXX",
 };
 
 let app = initializeApp(firebaseConfig);
